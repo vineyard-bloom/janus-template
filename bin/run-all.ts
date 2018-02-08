@@ -1,5 +1,4 @@
 #!/usr/bin/env node
-
-import { configureJsonSchemaGeneration } from "./index"
+import { configureJsonSchemaGeneration } from "../index"
 
 configureJsonSchemaGeneration().compileAll()
