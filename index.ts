@@ -9,6 +9,8 @@ import { ConfiguredDirectoryStructure, DirectoryStructure, prependRootPaths } fr
 
 const requireDir = require("require-dir")
 
+export { EndpointDefinition } from "./generators/parsing/endpoint-schema-parsing"
+
 export function configureJsonSchemaGeneration(
   projectRootDirectory = __dirname,
   currentRootDirectory = __dirname,
