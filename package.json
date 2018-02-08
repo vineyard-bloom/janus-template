@@ -4,7 +4,7 @@
   "description": "",
   "main": "run-all",
   "scripts": {
-    "compileAll": "node run-all.js && tsc"
+    "compileAll": "mkdir -p target && node run-all.js && tsc"
   },
   "author": "",
   "dependencies": {
