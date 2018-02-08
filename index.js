@@ -15,11 +15,11 @@ const api_contract_writer_1 = require("./generators/api-contract/api-contract-wr
 const requireDir = require("require-dir");
 var DirStructure;
 (function (DirStructure) {
-    DirStructure["TYPES_TARGET"] = "/target/endpoint-types.d.ts";
-    DirStructure["STUBS_TARGET"] = "/target/endpoint-stubs.ts";
+    DirStructure["TYPES_TARGET"] = "../target/endpoint-types.d.ts";
+    DirStructure["STUBS_TARGET"] = "../target/endpoint-stubs.ts";
     DirStructure["SCHEMA_SOURCE"] = "/endpoint-definitions";
     DirStructure["SCHEMA_HELPERS"] = "/generators/parsing/schema-validators.json";
-    DirStructure["APICONTRACT_TARGET"] = "/target/api-contract.d.ts";
+    DirStructure["APICONTRACT_TARGET"] = "../target/api-contract.d.ts";
 })(DirStructure || (DirStructure = {}));
 function configureJsonSchemaGeneration(endpointSchemaDirectory = absolutePath(DirStructure.SCHEMA_SOURCE), schemaHelpersFile = absolutePath(DirStructure.SCHEMA_HELPERS), typesTargetFile = absolutePath(DirStructure.TYPES_TARGET), stubsTargetFile = absolutePath(DirStructure.STUBS_TARGET), apiContractTargetFile = absolutePath(DirStructure.APICONTRACT_TARGET)) {
     const configuredEndpointDefinitionsFromSchema = () => __awaiter(this, void 0, void 0, function* () { return endpoint_schema_parsing_1.generateEndpointDefinitionsFromSchema(endpointSchemaDirectory, schemaHelpersFile); });
