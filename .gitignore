@@ -3,3 +3,4 @@ yarn-*
 .idea
 .vscode
 target
+*.js.map
