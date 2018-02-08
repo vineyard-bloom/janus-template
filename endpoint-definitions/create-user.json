@@ -1,0 +1,31 @@
+{
+  "title": "Create User",
+  "path": "/user",
+  "verb": "post",
+  "authorized": 0,
+  "request":{
+    "type": "object",
+    "properties": {
+      "email": {"$ref": "#/validators/email"},
+      "password": {"$ref": "#/validators/password"},
+      "address": {"$ref": "#/validators/address"},
+      "firstName": {"type": "string"},
+      "lastName": {"type": "string"},
+      "teamId": {"$ref": "#/validators/uuid"},
+      "phone": {"type": "string", "pattern": "^(\\([0-9]{3}\\))?[0-9]{3}-[0-9]{4}$"}
+    },
+    "additionalProperties": false,
+    "required": ["email","password","address","lastName","teamId", "phone"]
+  },
+  "response":{
+    "type": "object",
+    "properties": {
+      "email": {"$ref": "#/validators/email"},
+      "address": {"$ref": "#/validators/address"},
+      "lastName": {"type": "string"},
+      "teamId": {"$ref": "#/validators/uuid"}
+    },
+    "additionalProperties": false,
+    "required": ["email","address","lastName", "teamId"]
+  }
+}
