@@ -1,10 +1,10 @@
 {
-  "name": "vineyard-contract-template",
+  "name": "vineyard-janus-template",
   "version": "0.1.0",
   "description": "",
-  "main": "run-all",
+  "main": "index",
   "bin": {
-    "janus-compile": "mkdir -p target && node run-all.js && tsc"
+    "janus-compile": "./run-all.js"
   },
   "scripts": {
     "compileAll": "mkdir -p target && node run-all.js && tsc"
