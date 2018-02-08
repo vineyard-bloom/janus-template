@@ -4,7 +4,7 @@
   "description": "",
   "main": "index",
   "bin": {
-    "janus-compile": "./bin/run-all"
+    "janus-compile": "./run-all.js"
   },
   "scripts": {
     "compileAll": "mkdir -p target && node run-all.js && tsc"
