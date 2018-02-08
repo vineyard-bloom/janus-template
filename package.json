@@ -3,6 +3,9 @@
   "version": "0.1.0",
   "description": "",
   "main": "run-all",
+  "bin": {
+    "janus-compile": "mkdir -p target && node run-all.js && tsc"
+  },
   "scripts": {
     "compileAll": "mkdir -p target && node run-all.js && tsc"
   },
