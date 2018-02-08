@@ -9,11 +9,11 @@ import { generateEndpointActionsRequirements, writeAbstractClass } from "./gener
 const requireDir = require("require-dir")
 
 enum DirStructure {
-  TYPES_TARGET = "../target/endpoint-types.d.ts",
-  STUBS_TARGET = "../target/endpoint-stubs.ts",
+  TYPES_TARGET = "/../../target/endpoint-types.d.ts",
+  STUBS_TARGET = "/../../target/endpoint-stubs.ts",
   SCHEMA_SOURCE = "/endpoint-definitions",
   SCHEMA_HELPERS = "/generators/parsing/schema-validators.json",
-  APICONTRACT_TARGET = "../target/api-contract.d.ts"
+  APICONTRACT_TARGET = "/../../target/api-contract.d.ts"
 }
 
 export function configureJsonSchemaGeneration(
