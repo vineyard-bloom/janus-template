@@ -32,7 +32,7 @@ export function generateEndpointDefinitionsFromSchema(directory: string, schemaH
   try {
     endpointSchema = requireDir(directory, {recurse: true})
   } catch (e) {
-    throw new Error(`Unable to recursively require endpoint schema. Ensure that directory ${directory} ONLY has endpoint .json schema and other directories with the same. ${e}`)
+    throw new Error(`Unable to recursively require endpoint schema. Ensure that directory ${directory} ONLY has endpoint .json schema and other directories with the same. \n${e}`)
   }
 
   return extractEndpointDefinitions( ajv(), endpointSchema, require(schemaHelperFile))

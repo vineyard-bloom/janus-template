@@ -1,0 +1,18 @@
+{
+  "title": "Sample Empty",
+  "path": "/empty",
+  "verb": "get",
+  "authorized": 0,
+  "request":{
+    "type": "object",
+    "properties": {
+    },
+    "additionalProperties": false
+  },
+  "response":   {
+    "type": "object",
+    "properties": {
+    },
+    "additionalProperties": false
+  }
+}

@@ -1,0 +1,40 @@
+{
+  "title": "Nested Object",
+  "path": "/nested/object",
+  "verb": "get",
+  "authorized": 0,
+  "request":{
+    "type": "object",
+    "properties": {
+      "someFlatProperty": {"$ref":"#/validators/uuid"},
+      "someNestedProperty": {
+        "type": "object",
+        "properties": {
+          "nestedProperty1": {"$ref":"#/validators/uuid"},
+          "nestedProperty2": {"$ref":"#/validators/uuid"}
+        },
+        "additionalProperties": false,
+        "required": ["nestedProperty1"]
+      }
+    },
+    "additionalProperties": false,
+    "required": ["someNestedProperty"]
+  },
+  "response":   {
+    "type": "object",
+    "properties": {
+      "name": {
+        "type": "string"
+      },
+      "textDescription": {
+        "type": "string"
+      },
+      "availableQuantity": {
+        "type": "integer",
+        "minimum": 0
+      }
+    },
+    "additionalProperties": true,
+    "required": ["name", "availableQuantity"]
+  }
+}

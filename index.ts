@@ -5,6 +5,7 @@ import {
 } from "./generators/parsing/endpoint-schema-parsing"
 import { generateTsEndpointTypeDefinitions } from "./generators/types/typescript-type-generator"
 import { generateEndpointActionsRequirements, writeAbstractClass } from "./generators/api-contract/api-contract-writer"
+
 const requireDir = require("require-dir")
 
 enum DirStructure {
@@ -43,3 +44,4 @@ export function configureJsonSchemaGeneration(
 function absolutePath(dir: DirStructure): string {
     return `${__dirname}${dir}`
 }
+
