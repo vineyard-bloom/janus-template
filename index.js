@@ -12,21 +12,15 @@ const stub_generating_1 = require("./generators/stubs/stub-generating");
 const endpoint_schema_parsing_1 = require("./generators/parsing/endpoint-schema-parsing");
 const typescript_type_generator_1 = require("./generators/types/typescript-type-generator");
 const api_contract_writer_1 = require("./generators/api-contract/api-contract-writer");
+const directory_structure_1 = require("./config/directory-structure");
 const requireDir = require("require-dir");
-var DirStructure;
-(function (DirStructure) {
-    DirStructure["TYPES_TARGET"] = "/../../target/endpoint-types.d.ts";
-    DirStructure["STUBS_TARGET"] = "/../../target/endpoint-stubs.ts";
-    DirStructure["SCHEMA_SOURCE"] = "/endpoint-definitions";
-    DirStructure["SCHEMA_HELPERS"] = "/generators/parsing/schema-validators.json";
-    DirStructure["APICONTRACT_TARGET"] = "/../../target/api-contract.d.ts";
-})(DirStructure || (DirStructure = {}));
-function configureJsonSchemaGeneration(endpointSchemaDirectory = absolutePath(DirStructure.SCHEMA_SOURCE), schemaHelpersFile = absolutePath(DirStructure.SCHEMA_HELPERS), typesTargetFile = absolutePath(DirStructure.TYPES_TARGET), stubsTargetFile = absolutePath(DirStructure.STUBS_TARGET), apiContractTargetFile = absolutePath(DirStructure.APICONTRACT_TARGET)) {
-    const configuredEndpointDefinitionsFromSchema = () => __awaiter(this, void 0, void 0, function* () { return endpoint_schema_parsing_1.generateEndpointDefinitionsFromSchema(endpointSchemaDirectory, schemaHelpersFile); });
-    const configuredCompileTsDefinitions = (endpoints) => __awaiter(this, void 0, void 0, function* () { return typescript_type_generator_1.generateTsEndpointTypeDefinitions(typesTargetFile, endpoints); });
-    const configuredCompileStubDefinitions = (endpoints) => __awaiter(this, void 0, void 0, function* () { return stub_generating_1.generateEndpointStubDefinitions(stubsTargetFile, typesTargetFile, endpoints); });
-    const configuredRawSchema = () => __awaiter(this, void 0, void 0, function* () { return { endpoints: requireDir(endpointSchemaDirectory, { recurse: true }), helpers: require(schemaHelpersFile) }; });
-    const configuredCompileApiContract = (endpoints) => __awaiter(this, void 0, void 0, function* () { return api_contract_writer_1.generateEndpointActionsRequirements(apiContractTargetFile, typesTargetFile, endpoints); });
+function configureJsonSchemaGeneration(projectRootDirectory = __dirname, currentRootDirectory = __dirname, directoryStructure = directory_structure_1.ConfiguredDirectoryStructure) {
+    const { TYPES_TARGET, STUBS_TARGET, SCHEMA_SOURCE, SCHEMA_HELPERS, APICONTRACT_TARGET } = directory_structure_1.prependRootPaths(projectRootDirectory, currentRootDirectory, directoryStructure);
+    const configuredEndpointDefinitionsFromSchema = () => __awaiter(this, void 0, void 0, function* () { return endpoint_schema_parsing_1.generateEndpointDefinitionsFromSchema(SCHEMA_SOURCE, SCHEMA_HELPERS); });
+    const configuredCompileTsDefinitions = (endpoints) => __awaiter(this, void 0, void 0, function* () { return typescript_type_generator_1.generateTsEndpointTypeDefinitions(TYPES_TARGET, endpoints); });
+    const configuredCompileStubDefinitions = (endpoints) => __awaiter(this, void 0, void 0, function* () { return stub_generating_1.generateEndpointStubDefinitions(STUBS_TARGET, TYPES_TARGET, endpoints); });
+    const configuredRawSchema = () => __awaiter(this, void 0, void 0, function* () { return { endpoints: requireDir(SCHEMA_SOURCE, { recurse: true }), helpers: require(SCHEMA_HELPERS) }; });
+    const configuredCompileApiContract = (endpoints) => __awaiter(this, void 0, void 0, function* () { return api_contract_writer_1.generateEndpointActionsRequirements(APICONTRACT_TARGET, TYPES_TARGET, endpoints); });
     return {
         getEndpointDefs: () => __awaiter(this, void 0, void 0, function* () { return yield configuredEndpointDefinitionsFromSchema(); }),
         compileAll: () => __awaiter(this, void 0, void 0, function* () {
@@ -39,7 +33,4 @@ function configureJsonSchemaGeneration(endpointSchemaDirectory = absolutePath(Di
     };
 }
 exports.configureJsonSchemaGeneration = configureJsonSchemaGeneration;
-function absolutePath(dir) {
-    return `${__dirname}${dir}`;
-}
 //# sourceMappingURL=index.js.map
