@@ -1,16 +1,13 @@
 {
-  "title": "Create User",
+  "title": "Get User",
   "path": "/user",
-  "verb": "post",
-  "authorized": 0,
+  "verb": "get",
+  "authorized": 1,
   "request":{
     "type": "object",
     "properties": {
-      "email": {"$ref": "#/validators/email"},
-      "password": {"$ref": "#/validators/password"}
     },
-    "additionalProperties": false,
-    "required": ["email","password"]
+    "additionalProperties": false
   },
   "response":{
     "type": "object",
