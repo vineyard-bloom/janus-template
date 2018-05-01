@@ -4,10 +4,10 @@
   "description": "",
   "main": "index",
   "bin": {
-    "janus-compile": "./run-all.js"
+    "janus-compile-from-external-endpoint-definitions": "./compile-from-external-endpoint-definitions.js"
   },
   "scripts": {
-    "compileAll": "mkdir -p target && node run-all.js && tsc"
+    "compileAll": "mkdir -p target && node compile-from-internal-endpoint-definitions.js && tsc"
   },
   "author": "",
   "dependencies": {

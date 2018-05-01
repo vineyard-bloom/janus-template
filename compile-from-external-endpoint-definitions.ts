@@ -6,4 +6,4 @@ if(process.argv.length < 3) {
 }
 
 const projectPath = process.argv[2]
-configureJsonSchemaGeneration(projectPath).compileAll()
+configureJsonSchemaGeneration(projectPath, projectPath).compileAll()

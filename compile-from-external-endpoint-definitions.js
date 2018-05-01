@@ -6,5 +6,5 @@ if (process.argv.length < 3) {
     throw new Error("Need to pass in current path as argument!");
 }
 const projectPath = process.argv[2];
-index_1.configureJsonSchemaGeneration(projectPath).compileAll();
-//# sourceMappingURL=run-all.js.map
+index_1.configureJsonSchemaGeneration(projectPath, projectPath).compileAll();
+//# sourceMappingURL=compile-from-external-endpoint-definitions.js.map
