@@ -1,4 +1,4 @@
 #!/usr/bin/env node
 import { configureJsonSchemaGeneration } from "./index"
 
-configureJsonSchemaGeneration().compileAll()
+configureJsonSchemaGeneration().then(generator => generator.compileAll())

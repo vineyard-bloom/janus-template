@@ -1,46 +1,37 @@
 import { generateEndpointStubDefinitions } from "./generators/stubs/stub-generating"
-import {
-  EndpointDefinition,
-  generateEndpointDefinitionsFromSchema
-} from "./generators/parsing/endpoint-schema-parsing"
+import { EndpointDefinition, generateEndpointDefinitionsFromSchema } from "./generators/parsing/endpoint-schema-parsing"
 import { generateTsEndpointTypeDefinitions } from "./generators/types/typescript-type-generator"
-import { generateEndpointActionsRequirements, writeAbstractClass } from "./generators/api-contract/api-contract-writer"
-import { ConfiguredDirectoryStructure, DirectoryStructure, prependRootPaths } from "./config/directory-structure"
-
+import { generateEndpointActionsRequirements } from "./generators/api-contract/api-contract-writer"
 const requireDir = require("require-dir")
 
 export { EndpointDefinition } from "./generators/parsing/endpoint-schema-parsing"
 
-export function configureJsonSchemaGeneration(
-  targetRootDirectory = __dirname,
-  endpointDefinitionsSourceDirectory = __dirname,
-  schemaHelpersDirectory = __dirname,
-  directoryStructure: DirectoryStructure = ConfiguredDirectoryStructure,
+export async function configureJsonSchemaGeneration(
+  generatedEndpointDefinitionsDirectory = __dirname + "/endpoint-definitions-generated",
+  endpointDefinitionsSourceDirectory = __dirname + "/endpoint-definitions",
+  schemaHelpersPath = __dirname + "/schema-validation-helpers.json"
 ){
-  const {
-    TYPES_TARGET,
-    STUBS_TARGET,
-    SCHEMA_SOURCE,
-    SCHEMA_HELPERS,
-    APICONTRACT_TARGET
-  } = prependRootPaths(targetRootDirectory, endpointDefinitionsSourceDirectory, schemaHelpersDirectory, directoryStructure)
+  const endpointTypesFile = generatedEndpointDefinitionsDirectory + "/endpoint-types.ts"
+  const endpointStubsFile = generatedEndpointDefinitionsDirectory + "/endpoint-stubs.ts"
+  const apiContractFile = generatedEndpointDefinitionsDirectory + "/api-contract.ts"
 
-  const configuredEndpointDefinitionsFromSchema = async () => generateEndpointDefinitionsFromSchema(SCHEMA_SOURCE, SCHEMA_HELPERS)
-  const configuredCompileTsDefinitions = async (endpoints: EndpointDefinition[]) => generateTsEndpointTypeDefinitions(TYPES_TARGET, endpoints)
-  const configuredCompileStubDefinitions = async (endpoints: EndpointDefinition[]) => generateEndpointStubDefinitions(STUBS_TARGET, TYPES_TARGET, endpoints)
-  const configuredRawSchema = async () => { return { endpoints: requireDir(SCHEMA_SOURCE, {recurse: true}), helpers: require(SCHEMA_HELPERS) } }
-  const configuredCompileApiContract = async (endpoints: EndpointDefinition[]) => generateEndpointActionsRequirements(APICONTRACT_TARGET, TYPES_TARGET, endpoints)
+
+  const configuredEndpointDefinitionsFromSchema = async () => generateEndpointDefinitionsFromSchema(endpointDefinitionsSourceDirectory, schemaHelpersPath)
+  const configuredCompileTsDefinitions = async (endpoints: EndpointDefinition[]) => generateTsEndpointTypeDefinitions(endpointTypesFile, endpoints)
+  const configuredCompileStubDefinitions = async (endpoints: EndpointDefinition[]) => generateEndpointStubDefinitions(endpointStubsFile, endpointTypesFile, endpoints)
+  const configuredRawSchema = async () => { return { endpoints: requireDir(endpointDefinitionsSourceDirectory, {recurse: true}), helpers: require(schemaHelpersPath) } }
+  const configuredCompileApiContract = async (endpoints: EndpointDefinition[]) => generateEndpointActionsRequirements(apiContractFile, endpointTypesFile, endpoints)
+
+  const endpointDefinitions = await configuredEndpointDefinitionsFromSchema()
 
   return {
-    getEndpointDefs: async () => await configuredEndpointDefinitionsFromSchema(),
+    endpointDefinitions,
+    rawSchema: configuredRawSchema,
     compileAll: async () => {
-      const endpointDefs = await configuredEndpointDefinitionsFromSchema()
-      await configuredCompileTsDefinitions(endpointDefs)
-      await configuredCompileStubDefinitions(endpointDefs)
-      await configuredCompileApiContract(endpointDefs)
-      return endpointDefs
+      await configuredCompileTsDefinitions(endpointDefinitions)
+      await configuredCompileStubDefinitions(endpointDefinitions)
+      await configuredCompileApiContract(endpointDefinitions)
     }
   }
 }
-
 

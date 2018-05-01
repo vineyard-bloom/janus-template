@@ -12,25 +12,28 @@ const stub_generating_1 = require("./generators/stubs/stub-generating");
 const endpoint_schema_parsing_1 = require("./generators/parsing/endpoint-schema-parsing");
 const typescript_type_generator_1 = require("./generators/types/typescript-type-generator");
 const api_contract_writer_1 = require("./generators/api-contract/api-contract-writer");
-const directory_structure_1 = require("./config/directory-structure");
 const requireDir = require("require-dir");
-function configureJsonSchemaGeneration(targetRootDirectory = __dirname, endpointDefinitionsSourceDirectory = __dirname, schemaHelpersDirectory = __dirname, directoryStructure = directory_structure_1.ConfiguredDirectoryStructure) {
-    const { TYPES_TARGET, STUBS_TARGET, SCHEMA_SOURCE, SCHEMA_HELPERS, APICONTRACT_TARGET } = directory_structure_1.prependRootPaths(targetRootDirectory, endpointDefinitionsSourceDirectory, schemaHelpersDirectory, directoryStructure);
-    const configuredEndpointDefinitionsFromSchema = () => __awaiter(this, void 0, void 0, function* () { return endpoint_schema_parsing_1.generateEndpointDefinitionsFromSchema(SCHEMA_SOURCE, SCHEMA_HELPERS); });
-    const configuredCompileTsDefinitions = (endpoints) => __awaiter(this, void 0, void 0, function* () { return typescript_type_generator_1.generateTsEndpointTypeDefinitions(TYPES_TARGET, endpoints); });
-    const configuredCompileStubDefinitions = (endpoints) => __awaiter(this, void 0, void 0, function* () { return stub_generating_1.generateEndpointStubDefinitions(STUBS_TARGET, TYPES_TARGET, endpoints); });
-    const configuredRawSchema = () => __awaiter(this, void 0, void 0, function* () { return { endpoints: requireDir(SCHEMA_SOURCE, { recurse: true }), helpers: require(SCHEMA_HELPERS) }; });
-    const configuredCompileApiContract = (endpoints) => __awaiter(this, void 0, void 0, function* () { return api_contract_writer_1.generateEndpointActionsRequirements(APICONTRACT_TARGET, TYPES_TARGET, endpoints); });
-    return {
-        getEndpointDefs: () => __awaiter(this, void 0, void 0, function* () { return yield configuredEndpointDefinitionsFromSchema(); }),
-        compileAll: () => __awaiter(this, void 0, void 0, function* () {
-            const endpointDefs = yield configuredEndpointDefinitionsFromSchema();
-            yield configuredCompileTsDefinitions(endpointDefs);
-            yield configuredCompileStubDefinitions(endpointDefs);
-            yield configuredCompileApiContract(endpointDefs);
-            return endpointDefs;
-        })
-    };
+function configureJsonSchemaGeneration(generatedEndpointDefinitionsDirectory = __dirname + "/endpoint-definitions-generated", endpointDefinitionsSourceDirectory = __dirname + "/endpoint-definitions", schemaHelpersPath = __dirname + "/schema-validation-helpers.json") {
+    return __awaiter(this, void 0, void 0, function* () {
+        const endpointTypesFile = generatedEndpointDefinitionsDirectory + "/endpoint-types.ts";
+        const endpointStubsFile = generatedEndpointDefinitionsDirectory + "/endpoint-stubs.ts";
+        const apiContractFile = generatedEndpointDefinitionsDirectory + "/api-contract.ts";
+        const configuredEndpointDefinitionsFromSchema = () => __awaiter(this, void 0, void 0, function* () { return endpoint_schema_parsing_1.generateEndpointDefinitionsFromSchema(endpointDefinitionsSourceDirectory, schemaHelpersPath); });
+        const configuredCompileTsDefinitions = (endpoints) => __awaiter(this, void 0, void 0, function* () { return typescript_type_generator_1.generateTsEndpointTypeDefinitions(endpointTypesFile, endpoints); });
+        const configuredCompileStubDefinitions = (endpoints) => __awaiter(this, void 0, void 0, function* () { return stub_generating_1.generateEndpointStubDefinitions(endpointStubsFile, endpointTypesFile, endpoints); });
+        const configuredRawSchema = () => __awaiter(this, void 0, void 0, function* () { return { endpoints: requireDir(endpointDefinitionsSourceDirectory, { recurse: true }), helpers: require(schemaHelpersPath) }; });
+        const configuredCompileApiContract = (endpoints) => __awaiter(this, void 0, void 0, function* () { return api_contract_writer_1.generateEndpointActionsRequirements(apiContractFile, endpointTypesFile, endpoints); });
+        const endpointDefinitions = yield configuredEndpointDefinitionsFromSchema();
+        return {
+            endpointDefinitions,
+            rawSchema: configuredRawSchema,
+            compileAll: () => __awaiter(this, void 0, void 0, function* () {
+                yield configuredCompileTsDefinitions(endpointDefinitions);
+                yield configuredCompileStubDefinitions(endpointDefinitions);
+                yield configuredCompileApiContract(endpointDefinitions);
+            })
+        };
+    });
 }
 exports.configureJsonSchemaGeneration = configureJsonSchemaGeneration;
 //# sourceMappingURL=index.js.map
