@@ -12,8 +12,9 @@ const requireDir = require("require-dir")
 export { EndpointDefinition } from "./generators/parsing/endpoint-schema-parsing"
 
 export function configureJsonSchemaGeneration(
-  projectRootDirectory = __dirname,
-  currentRootDirectory = __dirname,
+  targetRootDirectory = __dirname,
+  endpointDefinitionsSourceDirectory = __dirname,
+  schemaHelpersDirectory = __dirname,
   directoryStructure: DirectoryStructure = ConfiguredDirectoryStructure,
 ){
   const {
@@ -22,7 +23,7 @@ export function configureJsonSchemaGeneration(
     SCHEMA_SOURCE,
     SCHEMA_HELPERS,
     APICONTRACT_TARGET
-  } = prependRootPaths(projectRootDirectory, currentRootDirectory, directoryStructure)
+  } = prependRootPaths(targetRootDirectory, endpointDefinitionsSourceDirectory, schemaHelpersDirectory, directoryStructure)
 
   const configuredEndpointDefinitionsFromSchema = async () => generateEndpointDefinitionsFromSchema(SCHEMA_SOURCE, SCHEMA_HELPERS)
   const configuredCompileTsDefinitions = async (endpoints: EndpointDefinition[]) => generateTsEndpointTypeDefinitions(TYPES_TARGET, endpoints)
