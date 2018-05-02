@@ -3,7 +3,7 @@ import {
 	GetUserRequest, 
 	CreateUserResponse, 
 	GetUserResponse 
-} from '/Users/aarongreenspan/IbN/VINEYARD/vineyard-janus-template/endpoint-definitions-generated/endpoint-types'
+} from './endpoint-types'
 
 export interface ApiActions {
   createUser: (req: CreateUserRequest) => Promise<CreateUserResponse>

@@ -9,10 +9,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const fs = require("fs");
-function mapEndpointDefinitionsToImports(typesFile, endpointDefinitions) {
+function mapEndpointDefinitionsToImports(typesFilePath, endpointDefinitions) {
     const requestTypes = endpointDefinitions.map(def => def.requestTypeName);
     const responseTypes = endpointDefinitions.map(def => def.responseTypeName);
-    return { [typesFile.split(".")[0]]: requestTypes.concat(responseTypes) };
+    return { [relativePath(typesFilePath)]: requestTypes.concat(responseTypes) };
 }
 exports.mapEndpointDefinitionsToImports = mapEndpointDefinitionsToImports;
 function writeImports(targetFile, typeRequirements) {
@@ -28,4 +28,10 @@ function importStatment(importTypes, fromFile) {
     return `import {\n\t${importTypes.join(", \n\t")} \n} from '${fromFile}'`;
 }
 exports.importStatment = importStatment;
+function relativePath(filePath) {
+    const dirs = filePath.split('/');
+    const file = dirs[dirs.length - 1];
+    const [fileName, extension] = file.split('.');
+    return './' + fileName;
+}
 //# sourceMappingURL=file-formatting-writing-helpers.js.map

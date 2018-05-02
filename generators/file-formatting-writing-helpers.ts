@@ -1,10 +1,10 @@
 import { EndpointDefinition } from "./parsing/endpoint-schema-parsing"
 import * as fs from "fs"
 
-export function mapEndpointDefinitionsToImports(typesFile: string, endpointDefinitions: EndpointDefinition[]): { [fileName: string]: string[] } {
+export function mapEndpointDefinitionsToImports(typesFilePath: string, endpointDefinitions: EndpointDefinition[]): { [fileName: string]: string[] } {
   const requestTypes = endpointDefinitions.map(def => def.requestTypeName)
   const responseTypes = endpointDefinitions.map(def => def.responseTypeName)
-  return { [typesFile.split(".")[0]]: requestTypes.concat(responseTypes) }
+  return { [relativePath(typesFilePath)]: requestTypes.concat(responseTypes) }
 }
 
 export async function writeImports( targetFile: string, typeRequirements: { [fileName: string]: string[] } ) {
@@ -16,4 +16,11 @@ export async function writeImports( targetFile: string, typeRequirements: { [fil
 
 export function importStatment(importTypes: string[], fromFile: string ): string {
   return `import {\n\t${importTypes.join(", \n\t")} \n} from '${fromFile}'`
+}
+
+function relativePath(filePath: string): string {
+  const dirs = filePath.split('/')
+  const file = dirs[dirs.length - 1]
+  const [ fileName, extension ] = file.split('.')
+  return './' + fileName
 }
