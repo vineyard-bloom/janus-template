@@ -6,31 +6,25 @@ const requireDir = require("require-dir")
 
 export { EndpointDefinition } from "./generators/parsing/endpoint-schema-parsing"
 
-export async function configureJsonSchemaGeneration(
+export function configureJsonSchemaGeneration(
   generatedEndpointDefinitionsDirectory = __dirname + "/endpoint-definitions-generated",
   endpointDefinitionsSourceDirectory = __dirname + "/endpoint-definitions",
   schemaHelpersPath = __dirname + "/schema-validation-helpers.json"
-){
+): {endpointDefinitions: EndpointDefinition[], rawSchema: {endpoints: any, helpers: any}, compileAll: () => Promise<void>}  {
   const endpointTypesFile = generatedEndpointDefinitionsDirectory + "/endpoint-types.ts"
   const endpointStubsFile = generatedEndpointDefinitionsDirectory + "/endpoint-stubs.ts"
   const apiContractFile = generatedEndpointDefinitionsDirectory + "/api-contract.ts"
 
-
-  const configuredEndpointDefinitionsFromSchema = async () => generateEndpointDefinitionsFromSchema(endpointDefinitionsSourceDirectory, schemaHelpersPath)
-  const configuredCompileTsDefinitions = async (endpoints: EndpointDefinition[]) => generateTsEndpointTypeDefinitions(endpointTypesFile, endpoints)
-  const configuredCompileStubDefinitions = async (endpoints: EndpointDefinition[]) => generateEndpointStubDefinitions(endpointStubsFile, endpointTypesFile, endpoints)
-  const configuredRawSchema = async () => { return { endpoints: requireDir(endpointDefinitionsSourceDirectory, {recurse: true}), helpers: require(schemaHelpersPath) } }
-  const configuredCompileApiContract = async (endpoints: EndpointDefinition[]) => generateEndpointActionsRequirements(apiContractFile, endpointTypesFile, endpoints)
-
-  const endpointDefinitions = await configuredEndpointDefinitionsFromSchema()
+  const endpointDefinitions = generateEndpointDefinitionsFromSchema(endpointDefinitionsSourceDirectory, schemaHelpersPath)
+  const rawSchema = { endpoints: requireDir(endpointDefinitionsSourceDirectory, {recurse: true}), helpers: require(schemaHelpersPath) }
 
   return {
     endpointDefinitions,
-    rawSchema: configuredRawSchema,
+    rawSchema,
     compileAll: async () => {
-      await configuredCompileTsDefinitions(endpointDefinitions)
-      await configuredCompileStubDefinitions(endpointDefinitions)
-      await configuredCompileApiContract(endpointDefinitions)
+      await generateTsEndpointTypeDefinitions(endpointTypesFile, endpointDefinitions)
+      await generateEndpointStubDefinitions(endpointStubsFile, endpointTypesFile, endpointDefinitions)
+      await generateEndpointActionsRequirements(apiContractFile, endpointTypesFile, endpointDefinitions)
     }
   }
 }
