@@ -25,14 +25,14 @@ exports.generateEndpointStubDefinitions = generateEndpointStubDefinitions;
 function mapEndpointDefinitionToStubDefs(endpointDefinition) {
     const { title, request, response, requestTypeName, responseTypeName } = endpointDefinition;
     const writeableTitle = formatStubFunctionName(title);
-    const requestStub = formatStubFunction(writeableTitle + "Request", request, requestTypeName);
+    const requestStub = formatStubFunction(writeableTitle + "RequestData", request, requestTypeName + "['data']");
     const responseStub = formatStubFunction(writeableTitle + "Response", response, responseTypeName);
     return { requestStub, responseStub, title };
 }
 function formatStubFunction(title, schema, returnTypeName) {
     return `\n
 export async function ${title}Stub(): Promise<${returnTypeName}> {
-  return jsf.resolve(${JSON.stringify(schema)})
+  return jsf.resolve(${JSON.stringify(schema).replace(/"/g, '\'')})
 }`;
 }
 function formatStubFunctionName(title) {

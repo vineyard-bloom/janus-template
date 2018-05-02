@@ -13,10 +13,10 @@ function writeStubGeneratorsPrefix(targetFile, typeRequirements) {
     return __awaiter(this, void 0, void 0, function* () {
         yield fs.writeFileSync(targetFile, "");
         yield writeImports(targetFile, typeRequirements);
-        yield fs.appendFileSync(targetFile, "\nconst jsf = require('json-schema-faker');\n");
+        yield fs.appendFileSync(targetFile, "\nconst jsf = require('json-schema-faker')\n");
         yield fs.appendFileSync(targetFile, "jsf.extend('faker', function() {\n" +
-            "  return require('faker');\n" +
-            "});");
+            "  return require('faker')\n" +
+            "})");
     });
 }
 exports.writeStubGeneratorsPrefix = writeStubGeneratorsPrefix;

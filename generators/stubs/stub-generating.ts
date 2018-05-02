@@ -2,7 +2,7 @@ import {
   EndpointDefinition
 } from "../parsing/endpoint-schema-parsing"
 import { writeRequestResponseStubFunctions, writeStubGeneratorsPrefix } from "./stub-file-writer"
-import { mapEndpointDefinitionsToImports } from "../file-formatting-writing-helpers"
+import { mapEndpointDefinitionsToImports, replaceAll } from "../file-formatting-writing-helpers"
 
 export async function generateEndpointStubDefinitions (targetFile: string, typesFile : string, endpointDefinitions: EndpointDefinition[]): Promise<EndpointDefinition[]> {
   const imports = mapEndpointDefinitionsToImports(typesFile, endpointDefinitions)
@@ -19,7 +19,7 @@ function mapEndpointDefinitionToStubDefs(endpointDefinition: EndpointDefinition)
   const { title, request, response, requestTypeName, responseTypeName } = endpointDefinition
   const writeableTitle = formatStubFunctionName(title)
 
-  const requestStub = formatStubFunction(writeableTitle + "Request", request, requestTypeName)
+  const requestStub = formatStubFunction(writeableTitle + "RequestData", request, requestTypeName + "['data']")
   const responseStub = formatStubFunction(writeableTitle + "Response", response, responseTypeName)
   return {requestStub, responseStub, title}
 }
@@ -27,7 +27,7 @@ function mapEndpointDefinitionToStubDefs(endpointDefinition: EndpointDefinition)
 function formatStubFunction(title: string, schema: object, returnTypeName: string): string {
   return `\n
 export async function ${title}Stub(): Promise<${returnTypeName}> {
-  return jsf.resolve(${JSON.stringify(schema)})
+  return jsf.resolve(${JSON.stringify(schema).replace(/"/g, '\'')})
 }`
 }
 

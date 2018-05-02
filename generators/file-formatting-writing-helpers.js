@@ -34,4 +34,8 @@ function relativePath(filePath) {
     const [fileName, extension] = file.split('.');
     return './' + fileName;
 }
+function replaceAll(source, replace, replaceWith = "") {
+    return source.split(replace).join("");
+}
+exports.replaceAll = replaceAll;
 //# sourceMappingURL=file-formatting-writing-helpers.js.map

@@ -24,3 +24,7 @@ function relativePath(filePath: string): string {
   const [ fileName, extension ] = file.split('.')
   return './' + fileName
 }
+
+export function replaceAll(source: string, replace: string, replaceWith: string = ""): string {
+  return source.split(replace).join("")
+}
