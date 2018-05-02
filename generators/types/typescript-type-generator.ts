@@ -1,4 +1,4 @@
-import { EndpointDefinition } from "../parsing/endpoint-schema-parsing"
+import { EndpointDefinition } from "../endpoint-schema-parsing"
 import { parseJson2Ts } from "./json-schema-to-typescript-formatter"
 import { EndpointTypeDef, writeTsTypeDefinitions } from "./typescript-type-writer"
 import { replaceAll } from "../file-formatting-writing-helpers"

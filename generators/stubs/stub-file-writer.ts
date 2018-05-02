@@ -1,4 +1,5 @@
 import * as fs from "fs"
+import { writeImports } from "../import-writing-helpers"
 
 export async function writeStubGeneratorsPrefix(targetFile: string, typeRequirements: { [fileName: string]: string[] } ): Promise<void>{
   await fs.writeFileSync(targetFile, "")
@@ -15,13 +16,3 @@ export async function writeRequestResponseStubFunctions(targetFile: string, requ
   await fs.appendFileSync(targetFile, responseStubFunction)
 }
 
-async function writeImports( targetFile: string, typeRequirements: { [fileName: string]: string[] } ) {
-  for ( let i in typeRequirements ){
-    const importStatement = importStatment( typeRequirements[i], i )
-    await fs.appendFileSync(targetFile, importStatement + "\n")
-  }
-}
-
-function importStatment(importTypes: string[], fromFile: string ): string {
-  return `import {\n\t${importTypes.join(", \n\t")} \n} from '${fromFile}'`
-}

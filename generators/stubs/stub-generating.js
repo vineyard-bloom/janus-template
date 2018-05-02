@@ -10,9 +10,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const stub_file_writer_1 = require("./stub-file-writer");
 const file_formatting_writing_helpers_1 = require("../file-formatting-writing-helpers");
+const api_stub_file_writer_1 = require("./api-stub-file-writer");
 function generateEndpointStubDefinitions(targetFile, typesFile, endpointDefinitions) {
     return __awaiter(this, void 0, void 0, function* () {
-        const imports = file_formatting_writing_helpers_1.mapEndpointDefinitionsToImports(typesFile, endpointDefinitions);
+        const imports = file_formatting_writing_helpers_1.mapEndpointDefinitionsToReqResTypeImports(typesFile, endpointDefinitions);
         yield stub_file_writer_1.writeStubGeneratorsPrefix(targetFile, imports);
         for (let i in endpointDefinitions) {
             const { requestStub, responseStub, title } = mapEndpointDefinitionToStubDefs(endpointDefinitions[i]);
@@ -22,6 +23,14 @@ function generateEndpointStubDefinitions(targetFile, typesFile, endpointDefiniti
     });
 }
 exports.generateEndpointStubDefinitions = generateEndpointStubDefinitions;
+function generateApiStub(targetFile, stubsFile, apiContractFile, endpointDefinitions) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const writer = new api_stub_file_writer_1.ApiStubFileWriter(targetFile, stubsFile, apiContractFile);
+        yield writer.writeFile(endpointDefinitions);
+        return endpointDefinitions;
+    });
+}
+exports.generateApiStub = generateApiStub;
 function mapEndpointDefinitionToStubDefs(endpointDefinition) {
     const { title, request, response, requestTypeName, responseTypeName } = endpointDefinition;
     const writeableTitle = formatStubFunctionName(title);

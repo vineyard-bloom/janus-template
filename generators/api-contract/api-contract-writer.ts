@@ -1,12 +1,12 @@
-import { EndpointDefinition } from "../parsing/endpoint-schema-parsing"
+import { EndpointDefinition } from "../endpoint-schema-parsing"
 import * as fs from "fs"
-import { mapEndpointDefinitionsToImports, writeImports } from "../file-formatting-writing-helpers"
+import { mapEndpointDefinitionsToReqResTypeImports, writeImports } from "../file-formatting-writing-helpers"
 
 
 export async function generateEndpointActionsRequirements(apiContractFile: string, typesFile: string, endpointDefinitions: EndpointDefinition[]) {
   await fs.writeFileSync(apiContractFile, "")
 
-  const imports = mapEndpointDefinitionsToImports(typesFile, endpointDefinitions)
+  const imports = mapEndpointDefinitionsToReqResTypeImports(typesFile, endpointDefinitions)
   await writeImports(apiContractFile, imports)
 
   writeAbstractClass(apiContractFile, "ApiActions", endpointDefinitions)

@@ -13,7 +13,7 @@ const file_formatting_writing_helpers_1 = require("../file-formatting-writing-he
 function generateEndpointActionsRequirements(apiContractFile, typesFile, endpointDefinitions) {
     return __awaiter(this, void 0, void 0, function* () {
         yield fs.writeFileSync(apiContractFile, "");
-        const imports = file_formatting_writing_helpers_1.mapEndpointDefinitionsToImports(typesFile, endpointDefinitions);
+        const imports = file_formatting_writing_helpers_1.mapEndpointDefinitionsToReqResTypeImports(typesFile, endpointDefinitions);
         yield file_formatting_writing_helpers_1.writeImports(apiContractFile, imports);
         writeAbstractClass(apiContractFile, "ApiActions", endpointDefinitions);
     });

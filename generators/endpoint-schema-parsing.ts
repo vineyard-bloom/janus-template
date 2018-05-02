@@ -66,12 +66,14 @@ function formatEndpointDefinitionFromJson(endpointDefJson: EndpointDefinitionJSO
 
   const noWhiteSpaceTitle = endpointDefJson.title.replace(" ","").replace("\n","").replace("\t","")
 
+  const actionName = noWhiteSpaceTitle.charAt(0).toLowerCase() + noWhiteSpaceTitle.slice(1)
+
   return Object.assign( endpointDefJson, {
       request: requestSchema,
       response: responseSchema,
       requestTypeName: noWhiteSpaceTitle + "Request",
       responseTypeName: noWhiteSpaceTitle + "Response",
-      actionName: noWhiteSpaceTitle.charAt(0).toLowerCase() + noWhiteSpaceTitle.slice(1),
+      actionName,
       requestValidator: ajv.compile(requestSchema),
       responseValidator: ajv.compile(responseSchema)
     }

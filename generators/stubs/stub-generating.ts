@@ -1,17 +1,24 @@
 import {
   EndpointDefinition
-} from "../parsing/endpoint-schema-parsing"
+} from "../endpoint-schema-parsing"
 import { writeRequestResponseStubFunctions, writeStubGeneratorsPrefix } from "./stub-file-writer"
-import { mapEndpointDefinitionsToImports, replaceAll } from "../file-formatting-writing-helpers"
+import { mapEndpointDefinitionsToReqResTypeImports, replaceAll } from "../file-formatting-writing-helpers"
+import { ApiStubFileWriter } from "./api-stub-file-writer"
 
 export async function generateEndpointStubDefinitions (targetFile: string, typesFile : string, endpointDefinitions: EndpointDefinition[]): Promise<EndpointDefinition[]> {
-  const imports = mapEndpointDefinitionsToImports(typesFile, endpointDefinitions)
+  const imports = mapEndpointDefinitionsToReqResTypeImports(typesFile, endpointDefinitions)
   await writeStubGeneratorsPrefix(targetFile, imports)
 
   for(let i in endpointDefinitions){
     const {requestStub, responseStub, title} = mapEndpointDefinitionToStubDefs(endpointDefinitions[i])
     await writeRequestResponseStubFunctions(targetFile, requestStub, responseStub, title)
   }
+  return endpointDefinitions
+}
+
+export async function generateApiStub (targetFile: string, stubsFile : string, apiContractFile: string, endpointDefinitions: EndpointDefinition[]): Promise<EndpointDefinition[]> {
+  const writer = new ApiStubFileWriter(targetFile, stubsFile, apiContractFile)
+  await writer.writeFile(endpointDefinitions)
   return endpointDefinitions
 }
 

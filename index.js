@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const stub_generating_1 = require("./generators/stubs/stub-generating");
-const endpoint_schema_parsing_1 = require("./generators/parsing/endpoint-schema-parsing");
+const endpoint_schema_parsing_1 = require("./generators/endpoint-schema-parsing");
 const typescript_type_generator_1 = require("./generators/types/typescript-type-generator");
 const api_contract_writer_1 = require("./generators/api-contract/api-contract-writer");
 const requireDir = require("require-dir");
@@ -17,6 +17,7 @@ function configureJsonSchemaGeneration(generatedEndpointDefinitionsDirectory = _
     const endpointTypesFile = generatedEndpointDefinitionsDirectory + "/endpoint-types.ts";
     const endpointStubsFile = generatedEndpointDefinitionsDirectory + "/endpoint-stubs.ts";
     const apiContractFile = generatedEndpointDefinitionsDirectory + "/api-contract.ts";
+    const apiStubFile = generatedEndpointDefinitionsDirectory + "/api-stub.ts";
     const endpointDefinitions = endpoint_schema_parsing_1.generateEndpointDefinitionsFromSchema(endpointDefinitionsSourceDirectory, schemaHelpersPath);
     const rawSchema = { endpoints: requireDir(endpointDefinitionsSourceDirectory, { recurse: true }), helpers: require(schemaHelpersPath) };
     return {
@@ -26,6 +27,7 @@ function configureJsonSchemaGeneration(generatedEndpointDefinitionsDirectory = _
             yield typescript_type_generator_1.generateTsEndpointTypeDefinitions(endpointTypesFile, endpointDefinitions);
             yield stub_generating_1.generateEndpointStubDefinitions(endpointStubsFile, endpointTypesFile, endpointDefinitions);
             yield api_contract_writer_1.generateEndpointActionsRequirements(apiContractFile, endpointTypesFile, endpointDefinitions);
+            yield stub_generating_1.generateApiStub(apiStubFile, endpointStubsFile, apiContractFile, endpointDefinitions);
         })
     };
 }

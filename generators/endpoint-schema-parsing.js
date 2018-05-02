@@ -44,12 +44,13 @@ function formatEndpointDefinitionFromJson(endpointDefJson, ajv, schemaHelpers) {
     const requestSchema = attachSchemaRefs(endpointDefJson.request, schemaHelpers);
     const responseSchema = attachSchemaRefs(endpointDefJson.response, schemaHelpers);
     const noWhiteSpaceTitle = endpointDefJson.title.replace(" ", "").replace("\n", "").replace("\t", "");
+    const actionName = noWhiteSpaceTitle.charAt(0).toLowerCase() + noWhiteSpaceTitle.slice(1);
     return Object.assign(endpointDefJson, {
         request: requestSchema,
         response: responseSchema,
         requestTypeName: noWhiteSpaceTitle + "Request",
         responseTypeName: noWhiteSpaceTitle + "Response",
-        actionName: noWhiteSpaceTitle.charAt(0).toLowerCase() + noWhiteSpaceTitle.slice(1),
+        actionName,
         requestValidator: ajv.compile(requestSchema),
         responseValidator: ajv.compile(responseSchema)
     });
