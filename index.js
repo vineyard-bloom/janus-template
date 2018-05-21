@@ -13,13 +13,13 @@ const endpoint_schema_parsing_1 = require("./generators/endpoint-schema-parsing"
 const typescript_type_generator_1 = require("./generators/types/typescript-type-generator");
 const api_contract_writer_1 = require("./generators/api-contract/api-contract-writer");
 const requireDir = require("require-dir");
-function configureJsonSchemaGeneration(generatedEndpointDefinitionsDirectory = __dirname + "/endpoint-definitions-generated", endpointDefinitionsSourceDirectory = __dirname + "/endpoint-definitions", schemaHelpersPath = __dirname + "/schema-validation-helpers.json") {
+function configureJsonSchemaGeneration(generatedEndpointDefinitionsDirectory = __dirname + "/endpoint-definitions-generated", endpointDefinitionsSourceDirectory = __dirname + "/endpoint-definitions", schemaDefinitionsJSON = require(__dirname + "/schema-validation-helpers.json")) {
     const endpointTypesFile = generatedEndpointDefinitionsDirectory + "/endpoint-types.ts";
     const endpointStubsFile = generatedEndpointDefinitionsDirectory + "/endpoint-stubs.ts";
     const apiContractFile = generatedEndpointDefinitionsDirectory + "/api-contract.ts";
     const apiStubFile = generatedEndpointDefinitionsDirectory + "/api-stub.ts";
-    const endpointDefinitions = endpoint_schema_parsing_1.generateEndpointDefinitionsFromSchema(endpointDefinitionsSourceDirectory, schemaHelpersPath);
-    const rawSchema = { endpoints: requireDir(endpointDefinitionsSourceDirectory, { recurse: true }), helpers: require(schemaHelpersPath) };
+    const endpointDefinitions = endpoint_schema_parsing_1.generateEndpointDefinitionsFromSchema(endpointDefinitionsSourceDirectory, schemaDefinitionsJSON);
+    const rawSchema = { endpoints: requireDir(endpointDefinitionsSourceDirectory, { recurse: true }), helpers: schemaDefinitionsJSON };
     return {
         endpointDefinitions,
         rawSchema,

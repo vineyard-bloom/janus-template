@@ -26,7 +26,7 @@ const endpointDefinitionJsonSample: EndpointDefinitionJSON = {
 }
 
 //A recursive import here should always be from require-dir and contain only endpoint definition .json files.
-export function generateEndpointDefinitionsFromSchema(directory: string, schemaHelperFile: string): EndpointDefinition[]{
+export function generateEndpointDefinitionsFromSchema(directory: string, schemaDefinitionsJSON: object): EndpointDefinition[]{
   let endpointSchema: {[key: string]: object}
 
   try {
@@ -35,7 +35,7 @@ export function generateEndpointDefinitionsFromSchema(directory: string, schemaH
     throw new Error(`Unable to recursively require endpoint schema. Ensure that directory ${directory} ONLY has endpoint .json schema and other directories with the same. \n${e}`)
   }
 
-  return extractEndpointDefinitions( ajv(), endpointSchema, require(schemaHelperFile))
+  return extractEndpointDefinitions( ajv(), endpointSchema, schemaDefinitionsJSON)
 }
 
 function extractEndpointDefinitions(ajv: ajv.Ajv, recursiveImport: {[key: string]: object}, schemaHelpers: object): EndpointDefinition[] {
