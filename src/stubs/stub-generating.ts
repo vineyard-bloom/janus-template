@@ -3,7 +3,7 @@ import {
 } from "../endpoint-schema-parsing"
 import { writeRequestResponseStubFunctions, writeStubGeneratorsPrefix } from "./stub-file-writer"
 import { mapEndpointDefinitionsToReqResTypeImports, replaceAll } from "../file-formatting-writing-helpers"
-import { ApiStubFileWriter } from "./api-stub-file-writer"
+import { ApiStubWriter } from "./api-stub-file-writer"
 
 export async function generateEndpointStubDefinitions (targetFile: string, typesFile : string, endpointDefinitions: EndpointDefinition[]): Promise<EndpointDefinition[]> {
   const imports = mapEndpointDefinitionsToReqResTypeImports(typesFile, endpointDefinitions)
@@ -17,7 +17,7 @@ export async function generateEndpointStubDefinitions (targetFile: string, types
 }
 
 export async function generateApiStub (targetFile: string, stubsFile : string, apiContractFile: string, endpointDefinitions: EndpointDefinition[]): Promise<EndpointDefinition[]> {
-  const writer = new ApiStubFileWriter(targetFile, stubsFile, apiContractFile)
+  const writer = new ApiStubWriter(targetFile, stubsFile, apiContractFile)
   await writer.writeFile(endpointDefinitions)
   return endpointDefinitions
 }

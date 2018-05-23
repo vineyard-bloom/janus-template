@@ -11,12 +11,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const fs = require("fs");
 const file_formatting_writing_helpers_1 = require("../file-formatting-writing-helpers");
 class ApiContractWriter {
-    constructor(apiContractFile, typesFile, interfaceName = "ApiContract") {
+    constructor(apiContractFile, typesFile, apiContractInterfaceName = "ApiContract") {
         this.apiContractFile = apiContractFile;
         this.typesFile = typesFile;
-        this.interfaceName = interfaceName;
+        this.interfaceName = apiContractInterfaceName;
     }
-    writeApiContract(endpointDefinitions) {
+    writeFile(endpointDefinitions) {
         return __awaiter(this, void 0, void 0, function* () {
             yield fs.writeFileSync(this.apiContractFile, "");
             const importTypes = file_formatting_writing_helpers_1.importStatment(file_formatting_writing_helpers_1.relativePath(this.typesFile), endpointDefinitions.reduce((acc, def) => {

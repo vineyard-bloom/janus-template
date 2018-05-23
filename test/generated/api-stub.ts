@@ -3,10 +3,10 @@ import {
 	getUserResponseStub 
 } from './endpoint-stubs'
 import {
-	ApiActions 
+	ApiContract 
 } from './api-contract'
 
-export const apiStub: ApiActions = {
+export const apiStub: ApiContract = {
   createUser: createUserResponseStub,
 	getUser: getUserResponseStub
 }

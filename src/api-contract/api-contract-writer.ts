@@ -7,13 +7,13 @@ export class ApiContractWriter {
   private readonly typesFile: string
   private readonly interfaceName: string
 
-  constructor(apiContractFile: string, typesFile: string, interfaceName: string = "ApiContract"){
+  constructor(apiContractFile: string, typesFile: string, apiContractInterfaceName: string = "ApiContract"){
     this.apiContractFile = apiContractFile
     this.typesFile = typesFile
-    this.interfaceName = interfaceName
+    this.interfaceName = apiContractInterfaceName
   }
   
-  async writeApiContract(endpointDefinitions: EndpointDefinition[]) {
+  async writeFile(endpointDefinitions: EndpointDefinition[]) {
     await fs.writeFileSync(this.apiContractFile, "")
     
     const importTypes = importStatment(relativePath(this.typesFile), endpointDefinitions.reduce((acc, def) => {

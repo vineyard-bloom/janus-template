@@ -3,15 +3,17 @@ import { writeImports } from "../import-writing-helpers"
 import * as fs from "fs"
 import { relativePath } from "../file-formatting-writing-helpers"
 
-export class ApiStubFileWriter {
-  private readonly targetFile: string
-  private readonly stubDependenciesFile: string
-  private readonly apiContractDependenciesFile: string
+export class ApiStubWriter {
+  private readonly apiStubFile: string
+  private readonly stubsFile: string
+  private readonly apiContractFile: string
+  private readonly apiContractInterfaceName: string
 
-  constructor(targetFile: string, stubDependenciesFile: string, apiContractDependenciesFile: string) {
-    this.targetFile = targetFile
-    this.stubDependenciesFile = stubDependenciesFile
-    this.apiContractDependenciesFile = apiContractDependenciesFile
+  constructor(apiStubFile: string, stubsFile: string, apiContractFile: string, apiContractInterfaceName: string = "ApiContract") {
+    this.apiStubFile = apiStubFile
+    this.stubsFile = stubsFile
+    this.apiContractFile = apiContractFile
+    this.apiContractInterfaceName = apiContractInterfaceName
   }
 
   async writeFile(endpointDefinitions: EndpointDefinition[]): Promise<void> {
@@ -25,21 +27,21 @@ export class ApiStubFileWriter {
     })
 
     const classToWrite = `
-export const apiStub: ApiActions = {
+export const apiStub: ${this.apiContractInterfaceName} = {
   ${stubMethods.join(",\n\t")}
 }`
 
-    await fs.appendFileSync(this.targetFile, classToWrite)
+    await fs.appendFileSync(this.apiStubFile, classToWrite)
   }
 
   private async writeImports(endpointDefinitions: EndpointDefinition[]): Promise<void> {
-    await fs.writeFileSync(this.targetFile, '')
+    await fs.writeFileSync(this.apiStubFile, '')
     const stubDependencies = endpointDefinitions.map(extractResponseStubName)
     const imports = {
-      [relativePath(this.stubDependenciesFile)]: stubDependencies,
-      [relativePath(this.apiContractDependenciesFile)]: ['ApiActions']
+      [relativePath(this.stubsFile)]: stubDependencies,
+      [relativePath(this.apiContractFile)]: [this.apiContractInterfaceName]
     }
-    await writeImports(this.targetFile, imports)
+    await writeImports(this.apiStubFile, imports)
   }
 }
 

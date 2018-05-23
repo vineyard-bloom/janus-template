@@ -25,7 +25,7 @@ function generateEndpointStubDefinitions(targetFile, typesFile, endpointDefiniti
 exports.generateEndpointStubDefinitions = generateEndpointStubDefinitions;
 function generateApiStub(targetFile, stubsFile, apiContractFile, endpointDefinitions) {
     return __awaiter(this, void 0, void 0, function* () {
-        const writer = new api_stub_file_writer_1.ApiStubFileWriter(targetFile, stubsFile, apiContractFile);
+        const writer = new api_stub_file_writer_1.ApiStubWriter(targetFile, stubsFile, apiContractFile);
         yield writer.writeFile(endpointDefinitions);
         return endpointDefinitions;
     });
