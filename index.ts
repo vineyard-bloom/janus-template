@@ -7,17 +7,21 @@ const requireDir = require("require-dir")
 export { EndpointDefinition } from "./generators/endpoint-schema-parsing"
 
 export function configureJsonSchemaGeneration(
-  generatedEndpointDefinitionsDirectory: string = __dirname + "/endpoint-definitions-generated",
-  endpointDefinitionsSourceDirectory: string = __dirname + "/endpoint-definitions",
-  schemaDefinitionsJSON: object = require(__dirname + "/schema-validation-helpers.json")
-): {endpointDefinitions: EndpointDefinition[], rawSchema: {endpoints: any, helpers: any}, compileAll: () => Promise<void>}  {
-  const endpointTypesFile = generatedEndpointDefinitionsDirectory + "/endpoint-types.ts"
-  const endpointStubsFile = generatedEndpointDefinitionsDirectory + "/endpoint-stubs.ts"
-  const apiContractFile = generatedEndpointDefinitionsDirectory + "/api-contract.ts"
-  const apiStubFile = generatedEndpointDefinitionsDirectory + "/api-stub.ts"
+  targetDirectory: string,
+  sourceDirectory: string,
+  schemaDefinitionsJSON: object
+): {
+  endpointDefinitions: EndpointDefinition[],
+  rawSchema: {endpoints: object, schemaDefinitions: object},
+  compileAll: () => Promise<void>
+}{
+  const endpointTypesFile = targetDirectory + "/endpoint-types.ts"
+  const endpointStubsFile = targetDirectory + "/endpoint-stubs.ts"
+  const apiContractFile = targetDirectory + "/api-contract.ts"
+  const apiStubFile = targetDirectory + "/api-stub.ts"
 
-  const endpointDefinitions = generateEndpointDefinitionsFromSchema(endpointDefinitionsSourceDirectory, schemaDefinitionsJSON)
-  const rawSchema = { endpoints: requireDir(endpointDefinitionsSourceDirectory, {recurse: true}), helpers: schemaDefinitionsJSON }
+  const endpointDefinitions = generateEndpointDefinitionsFromSchema(sourceDirectory, schemaDefinitionsJSON)
+  const rawSchema = { endpoints: requireDir(sourceDirectory, {recurse: true}), schemaDefinitions: schemaDefinitionsJSON }
 
   return {
     endpointDefinitions,
