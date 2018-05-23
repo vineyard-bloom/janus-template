@@ -10,26 +10,23 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const fs = require("fs");
 const file_formatting_writing_helpers_1 = require("../file-formatting-writing-helpers");
-function generateEndpointActionsRequirements(apiContractFile, typesFile, endpointDefinitions) {
-    return __awaiter(this, void 0, void 0, function* () {
-        yield fs.writeFileSync(apiContractFile, "");
-        const imports = file_formatting_writing_helpers_1.mapEndpointDefinitionsToReqResTypeImports(typesFile, endpointDefinitions);
-        yield file_formatting_writing_helpers_1.writeImports(apiContractFile, imports);
-        writeAbstractClass(apiContractFile, "ApiActions", endpointDefinitions);
-    });
-}
-exports.generateEndpointActionsRequirements = generateEndpointActionsRequirements;
-function writeAbstractClass(apiContractFile, className, endpointActions) {
-    return __awaiter(this, void 0, void 0, function* () {
-        const interfaceMethods = endpointActions.map(def => {
-            return `${def.actionName}: (req: ${def.requestTypeName}) => Promise<${def.responseTypeName}>`;
+class ApiContractWriter {
+    constructor(apiContractFile, typesFile, interfaceName = "ApiContract") {
+        this.apiContractFile = apiContractFile;
+        this.typesFile = typesFile;
+        this.interfaceName = interfaceName;
+    }
+    writeApiContract(endpointDefinitions) {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield fs.writeFileSync(this.apiContractFile, "");
+            const importTypes = file_formatting_writing_helpers_1.importStatment(file_formatting_writing_helpers_1.relativePath(this.typesFile), endpointDefinitions.reduce((acc, def) => {
+                return [...acc, def.requestTypeName, def.responseTypeName];
+            }, []));
+            yield fs.appendFileSync(this.apiContractFile, importTypes);
+            const methods = file_formatting_writing_helpers_1.interfaceMethods(this.interfaceName, endpointDefinitions);
+            yield fs.appendFileSync(this.apiContractFile, methods);
         });
-        const classToWrite = `
-export interface ${className} {
-  ${interfaceMethods.join("\n\t")}
-}`;
-        yield fs.appendFileSync(apiContractFile, classToWrite);
-    });
+    }
 }
-exports.writeAbstractClass = writeAbstractClass;
+exports.ApiContractWriter = ApiContractWriter;
 //# sourceMappingURL=api-contract-writer.js.map

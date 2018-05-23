@@ -1,11 +1,10 @@
 import {
 	CreateUserRequest, 
-	GetUserRequest, 
 	CreateUserResponse, 
+	GetUserRequest, 
 	GetUserResponse 
 } from './endpoint-types'
-
-export interface ApiActions {
+export interface ApiContract {
   createUser: (req: CreateUserRequest) => Promise<CreateUserResponse>
 	getUser: (req: GetUserRequest) => Promise<GetUserResponse>
 }

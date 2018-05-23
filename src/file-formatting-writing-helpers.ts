@@ -9,12 +9,12 @@ export function mapEndpointDefinitionsToReqResTypeImports(typesFilePath: string,
 
 export async function writeImports( targetFile: string, typeRequirements: { [fileName: string]: string[] } ) {
   for ( let i in typeRequirements ){
-    const importStatement = importStatment( typeRequirements[i], i )
+    const importStatement = importStatment(i, typeRequirements[ i ])
     await fs.appendFileSync(targetFile, importStatement + "\n")
   }
 }
 
-export function importStatment(importTypes: string[], fromFile: string ): string {
+export function importStatment (fromFile: string, importTypes: string[]): string {
   return `import {\n\t${importTypes.join(", \n\t")} \n} from '${fromFile}'`
 }
 
@@ -27,4 +27,15 @@ export function relativePath(filePath: string): string {
 
 export function replaceAll(source: string, replace: string, replaceWith: string = ""): string {
   return source.split(replace).join("")
+}
+
+export function interfaceMethods (className: string, endpointActions: { actionName: string, requestTypeName: string, responseTypeName: string }[]): string {
+  const interfaceMethods = endpointActions.map(def => {
+    return `${def.actionName}: (req: ${def.requestTypeName}) => Promise<${def.responseTypeName}>`
+  })
+
+  return `
+export interface ${className} {
+  ${interfaceMethods.join("\n\t")}
+}`
 }

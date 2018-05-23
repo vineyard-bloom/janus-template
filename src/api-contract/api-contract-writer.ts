@@ -1,27 +1,28 @@
 import { EndpointDefinition } from "../endpoint-schema-parsing"
 import * as fs from "fs"
-import { mapEndpointDefinitionsToReqResTypeImports, writeImports } from "../file-formatting-writing-helpers"
+import { importStatment, interfaceMethods, relativePath } from "../file-formatting-writing-helpers"
 
+export class ApiContractWriter {
+  private readonly apiContractFile: string
+  private readonly typesFile: string
+  private readonly interfaceName: string
 
-export async function generateEndpointActionsRequirements(apiContractFile: string, typesFile: string, endpointDefinitions: EndpointDefinition[]) {
-  await fs.writeFileSync(apiContractFile, "")
-
-  const imports = mapEndpointDefinitionsToReqResTypeImports(typesFile, endpointDefinitions)
-  await writeImports(apiContractFile, imports)
-
-  writeAbstractClass(apiContractFile, "ApiActions", endpointDefinitions)
+  constructor(apiContractFile: string, typesFile: string, interfaceName: string = "ApiContract"){
+    this.apiContractFile = apiContractFile
+    this.typesFile = typesFile
+    this.interfaceName = interfaceName
+  }
+  
+  async writeApiContract(endpointDefinitions: EndpointDefinition[]) {
+    await fs.writeFileSync(this.apiContractFile, "")
+    
+    const importTypes = importStatment(relativePath(this.typesFile), endpointDefinitions.reduce((acc, def) => {
+      return [ ...acc, def.requestTypeName, def.responseTypeName ]
+    }, [] as string []))
+    await fs.appendFileSync(this.apiContractFile,  importTypes)
+    
+    const methods = interfaceMethods(this.interfaceName, endpointDefinitions)
+    await fs.appendFileSync(this.apiContractFile,  methods)
+  }
 }
 
-export async function writeAbstractClass(apiContractFile: string, className: string, endpointActions: {actionName: string, requestTypeName: string, responseTypeName: string}[]): Promise<void> {
-
-  const interfaceMethods = endpointActions.map(def => {
-    return `${def.actionName}: (req: ${def.requestTypeName}) => Promise<${def.responseTypeName}>`
-  })
-
-  const classToWrite = `
-export interface ${className} {
-  ${interfaceMethods.join("\n\t")}
-}`
-
-  await fs.appendFileSync(apiContractFile, classToWrite)
-}

@@ -18,13 +18,13 @@ exports.mapEndpointDefinitionsToReqResTypeImports = mapEndpointDefinitionsToReqR
 function writeImports(targetFile, typeRequirements) {
     return __awaiter(this, void 0, void 0, function* () {
         for (let i in typeRequirements) {
-            const importStatement = importStatment(typeRequirements[i], i);
+            const importStatement = importStatment(i, typeRequirements[i]);
             yield fs.appendFileSync(targetFile, importStatement + "\n");
         }
     });
 }
 exports.writeImports = writeImports;
-function importStatment(importTypes, fromFile) {
+function importStatment(fromFile, importTypes) {
     return `import {\n\t${importTypes.join(", \n\t")} \n} from '${fromFile}'`;
 }
 exports.importStatment = importStatment;
@@ -39,4 +39,14 @@ function replaceAll(source, replace, replaceWith = "") {
     return source.split(replace).join("");
 }
 exports.replaceAll = replaceAll;
+function interfaceMethods(className, endpointActions) {
+    const interfaceMethods = endpointActions.map(def => {
+        return `${def.actionName}: (req: ${def.requestTypeName}) => Promise<${def.responseTypeName}>`;
+    });
+    return `
+export interface ${className} {
+  ${interfaceMethods.join("\n\t")}
+}`;
+}
+exports.interfaceMethods = interfaceMethods;
 //# sourceMappingURL=file-formatting-writing-helpers.js.map
