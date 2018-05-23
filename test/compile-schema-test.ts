@@ -1,4 +1,4 @@
-import { configureJsonSchemaGeneration } from "../index"
+import { configureJsonSchemaGeneration } from "../src/index"
 
 const targetDirectory = __dirname + "/generated"
 const sourceDirectory = __dirname + "/endpoint-schema-definitions"

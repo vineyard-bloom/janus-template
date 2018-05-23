@@ -8,17 +8,20 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const stub_generating_1 = require("./generators/stubs/stub-generating");
-const endpoint_schema_parsing_1 = require("./generators/endpoint-schema-parsing");
-const typescript_type_generator_1 = require("./generators/types/typescript-type-generator");
-const api_contract_writer_1 = require("./generators/api-contract/api-contract-writer");
+const stub_generating_1 = require("./stubs/stub-generating");
+const endpoint_schema_parsing_1 = require("./endpoint-schema-parsing");
+const typescript_type_generator_1 = require("./types/typescript-type-generator");
+const api_contract_writer_1 = require("./api-contract/api-contract-writer");
 const requireDir = require("require-dir");
-function configureJsonSchemaGeneration(targetDirectory, sourceDirectory, schemaDefinitionsJSON) {
+function configureJsonSchemaGeneration(targetDirectory, sourceDirectory, schemaDefinitionsJSON, fileNameConf = {
+        types: "endpoint-types",
+        stubs: "endpoint-stubs"
+    }) {
     const endpointTypesFile = targetDirectory + "/endpoint-types.ts";
     const endpointStubsFile = targetDirectory + "/endpoint-stubs.ts";
     const apiContractFile = targetDirectory + "/api-contract.ts";
     const apiStubFile = targetDirectory + "/api-stub.ts";
-    const endpointDefinitions = endpoint_schema_parsing_1.generateEndpointDefinitionsFromSchema(sourceDirectory, schemaDefinitionsJSON);
+    const endpointDefinitions = endpoint_schema_parsing_1.extractEndpointDefinitionsFromSchema(sourceDirectory, schemaDefinitionsJSON);
     const rawSchema = { endpoints: requireDir(sourceDirectory, { recurse: true }), schemaDefinitions: schemaDefinitionsJSON };
     return {
         endpointDefinitions,

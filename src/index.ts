@@ -1,15 +1,19 @@
-import { generateApiStub, generateEndpointStubDefinitions } from "./generators/stubs/stub-generating"
-import { EndpointDefinition, generateEndpointDefinitionsFromSchema } from "./generators/endpoint-schema-parsing"
-import { generateTsEndpointTypeDefinitions } from "./generators/types/typescript-type-generator"
-import { generateEndpointActionsRequirements } from "./generators/api-contract/api-contract-writer"
+import { generateApiStub, generateEndpointStubDefinitions } from "./stubs/stub-generating"
+import { EndpointDefinition, extractEndpointDefinitionsFromSchema } from "./endpoint-schema-parsing"
+import { generateTsEndpointTypeDefinitions } from "./types/typescript-type-generator"
+import { generateEndpointActionsRequirements } from "./api-contract/api-contract-writer"
 const requireDir = require("require-dir")
 
-export { EndpointDefinition } from "./generators/endpoint-schema-parsing"
+export { EndpointDefinition } from "./endpoint-schema-parsing"
 
 export function configureJsonSchemaGeneration(
   targetDirectory: string,
   sourceDirectory: string,
-  schemaDefinitionsJSON: object
+  schemaDefinitionsJSON: object,
+  fileNameConf = {
+    types: "endpoint-types",
+    stubs: "endpoint-stubs"
+  }
 ): {
   endpointDefinitions: EndpointDefinition[],
   rawSchema: {endpoints: object, schemaDefinitions: object},
@@ -20,7 +24,7 @@ export function configureJsonSchemaGeneration(
   const apiContractFile = targetDirectory + "/api-contract.ts"
   const apiStubFile = targetDirectory + "/api-stub.ts"
 
-  const endpointDefinitions = generateEndpointDefinitionsFromSchema(sourceDirectory, schemaDefinitionsJSON)
+  const endpointDefinitions = extractEndpointDefinitionsFromSchema(sourceDirectory, schemaDefinitionsJSON)
   const rawSchema = { endpoints: requireDir(sourceDirectory, {recurse: true}), schemaDefinitions: schemaDefinitionsJSON }
 
   return {

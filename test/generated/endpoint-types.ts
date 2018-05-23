@@ -6,7 +6,7 @@ import { Request } from 'vineyard-lawn'
  * and run json-schema-to-typescript to regenerate this file.
  */
 
-/************************ -- Create User -- *****************************/
+/************************ -- CreateUser -- *****************************/
 	
 export interface CreateUserRequest extends Request {
 	data: {
@@ -21,7 +21,7 @@ export interface CreateUserResponse {
 }
 
 
-/************************ -- Get User -- *****************************/
+/************************ -- GetUser -- *****************************/
 	
 export interface GetUserRequest extends Request {
 	data: {}

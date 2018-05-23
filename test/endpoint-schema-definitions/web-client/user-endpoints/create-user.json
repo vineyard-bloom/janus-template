@@ -1,5 +1,5 @@
 {
-  "title": "Create User",
+  "title": "CreateUser",
   "path": "/user",
   "verb": "post",
   "authorized": 0,
