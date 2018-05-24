@@ -1,6 +1,6 @@
 {
   "name": "vineyard-janus",
-  "version": "1.0.0-beta.4",
+  "version": "1.0.0-beta.5",
   "description": "Tools for parsing JSON-schema into typescript + stubs for usage by lawn.",
   "main": "index",
   "license": "MIT",
