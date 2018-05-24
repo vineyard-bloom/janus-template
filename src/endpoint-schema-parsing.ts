@@ -18,7 +18,6 @@ export type EndpointDefinition = EndpointDefinitionJSON & {
   responseValidator: ValidateFunction
 }
 
-//A recursive import here should always be from require-dir and contain only endpoint definition .json files.
 export function extractEndpointDefinitionsFromSchema(directory: string, schemaDefinitionsJSON: object): EndpointDefinition[]{
   return extractArrayOfJsonFromDirectory(directory)
     .map(validateEndpointDefinitionJson)
@@ -33,13 +32,9 @@ function extractArrayOfJsonFromDirectory(dir: string): object[] {
   )
 
   const fileContents = files.map( file => require(path.join(dir,file)) )
-  if(directories.length === 0) {
-    return fileContents
-  } else {
-    return fileContents.concat(directories.reduce( (acc, subDirectory) => {
-      return acc.concat(extractArrayOfJsonFromDirectory(path.join(dir,subDirectory)))
-    }, [] as object[]))
-  }
+  return fileContents.concat(directories.reduce( (acc, subDirectory) => {
+    return acc.concat(extractArrayOfJsonFromDirectory(path.join(dir,subDirectory)))
+  }, [] as object[]))
 }
 
 const JsonSchemaSchema = require(__dirname + '/validation/endpoint-schema.json')

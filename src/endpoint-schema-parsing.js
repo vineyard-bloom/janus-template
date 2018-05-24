@@ -3,7 +3,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const ajv = require("ajv");
 const fs = require("fs");
 const path = require("path");
-//A recursive import here should always be from require-dir and contain only endpoint definition .json files.
 function extractEndpointDefinitionsFromSchema(directory, schemaDefinitionsJSON) {
     return extractArrayOfJsonFromDirectory(directory)
         .map(validateEndpointDefinitionJson)
@@ -13,14 +12,9 @@ exports.extractEndpointDefinitionsFromSchema = extractEndpointDefinitionsFromSch
 function extractArrayOfJsonFromDirectory(dir) {
     const { pass: directories, fail: files } = partition(fs.readdirSync(dir), folderContent => fs.statSync(path.join(dir, folderContent)).isDirectory());
     const fileContents = files.map(file => require(path.join(dir, file)));
-    if (directories.length === 0) {
-        return fileContents;
-    }
-    else {
-        return fileContents.concat(directories.reduce((acc, subDirectory) => {
-            return acc.concat(extractArrayOfJsonFromDirectory(path.join(dir, subDirectory)));
-        }, []));
-    }
+    return fileContents.concat(directories.reduce((acc, subDirectory) => {
+        return acc.concat(extractArrayOfJsonFromDirectory(path.join(dir, subDirectory)));
+    }, []));
 }
 const JsonSchemaSchema = require(__dirname + '/validation/endpoint-schema.json');
 const JsonSchemaValidator = ajv().compile(JsonSchemaSchema);
