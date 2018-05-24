@@ -20,7 +20,7 @@ export class ApiContractWriter {
       relativePath(this.typesFile),
       endpointDefinitions.reduce((acc, def) => [ ...acc, def.requestTypeName, def.responseTypeName ], [] as string [])
     )
-    await fs.appendFileSync(this.apiContractFile,  importTypes)
+    await fs.appendFileSync(this.apiContractFile,  importTypes + "\n")
     
     const interfaceMethods = interfaceBody(this.interfaceName, endpointDefinitions)
     await fs.appendFileSync(this.apiContractFile,  interfaceMethods)

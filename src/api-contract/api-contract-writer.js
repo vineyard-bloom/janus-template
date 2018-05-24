@@ -20,7 +20,7 @@ class ApiContractWriter {
         return __awaiter(this, void 0, void 0, function* () {
             yield fs.writeFileSync(this.apiContractFile, "");
             const importTypes = file_formatting_writing_helpers_1.importStatment(file_formatting_writing_helpers_1.relativePath(this.typesFile), endpointDefinitions.reduce((acc, def) => [...acc, def.requestTypeName, def.responseTypeName], []));
-            yield fs.appendFileSync(this.apiContractFile, importTypes);
+            yield fs.appendFileSync(this.apiContractFile, importTypes + "\n");
             const interfaceMethods = interfaceBody(this.interfaceName, endpointDefinitions);
             yield fs.appendFileSync(this.apiContractFile, interfaceMethods);
         });
