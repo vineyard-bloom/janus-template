@@ -1,12 +1,12 @@
-import { StubFunctionWriter } from "./stubs/stub-function-writer"
-import { EndpointDefinition, extractEndpointDefinitionsFromSchema } from "./endpoint-schema-parsing"
-import { TypescriptTypeWriter } from "./types/typescript-type-writer"
-import { ApiContractWriter } from './api-contract/api-contract-writer'
-import { ApiStubWriter } from './stubs/api-stub-writer'
+import { StubFunctionWriter } from "./src/stubs/stub-function-writer"
+import { EndpointDefinition, extractEndpointDefinitionsFromSchema } from "./src/endpoint-schema-parsing"
+import { TypescriptTypeWriter } from "./src/types/typescript-type-writer"
+import { ApiContractWriter } from './src/api-contract/api-contract-writer'
+import { ApiStubWriter } from './src/stubs/api-stub-writer'
 
 const requireDir = require("require-dir")
 
-export { EndpointDefinition } from "./endpoint-schema-parsing"
+export { EndpointDefinition } from "./src/endpoint-schema-parsing"
 
 const API_CONTRACT_NAME = "ApiContract"
 

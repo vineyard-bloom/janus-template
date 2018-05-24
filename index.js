@@ -8,11 +8,11 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const stub_function_writer_1 = require("./stubs/stub-function-writer");
-const endpoint_schema_parsing_1 = require("./endpoint-schema-parsing");
-const typescript_type_writer_1 = require("./types/typescript-type-writer");
-const api_contract_writer_1 = require("./api-contract/api-contract-writer");
-const api_stub_writer_1 = require("./stubs/api-stub-writer");
+const stub_function_writer_1 = require("./src/stubs/stub-function-writer");
+const endpoint_schema_parsing_1 = require("./src/endpoint-schema-parsing");
+const typescript_type_writer_1 = require("./src/types/typescript-type-writer");
+const api_contract_writer_1 = require("./src/api-contract/api-contract-writer");
+const api_stub_writer_1 = require("./src/stubs/api-stub-writer");
 const requireDir = require("require-dir");
 const API_CONTRACT_NAME = "ApiContract";
 function configureJsonSchemaGeneration(targetDirectory, sourceDirectory, schemaDefinitionsJSON) {
