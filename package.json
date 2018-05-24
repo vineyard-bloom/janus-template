@@ -1,15 +1,10 @@
 {
   "name": "vineyard-janus",
   "version": "1.0.0-beta.3",
-  "description": "",
+  "description": "Tools for parsing JSON-schema into typescript + stubs for usage by lawn.",
   "main": "index",
-  "bin": {
-    "janus-compile-from-external-endpoint-definitions": "./compile-from-external-endpoint-definitions.js"
-  },
-  "scripts": {
-    "compileAll": "mkdir -p target && node compile-from-internal-endpoint-definitions.js && tsc"
-  },
-  "author": "",
+  "license": "MIT",
+  "author": "Ideas by Nature",
   "dependencies": {
     "@types/faker": "^4.1.2",
     "@types/node": "^7.0.16",
