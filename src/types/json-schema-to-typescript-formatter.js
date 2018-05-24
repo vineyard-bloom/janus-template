@@ -22,9 +22,6 @@ function parseJson2Ts(jsonSchema, typeName, extendsFrom, embeddedWithin) {
     });
 }
 exports.parseJson2Ts = parseJson2Ts;
-function removeWhiteSpace(text) {
-    return text.replace(/\s/g, "");
-}
 function appendInterfaceExtension(typeDef, interfaceName) {
     const typeDefChars = typeDef.split("");
     const definitionBeginning = typeDefChars.findIndex(word => word === "{");

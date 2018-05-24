@@ -19,14 +19,22 @@ class ApiContractWriter {
     writeFile(endpointDefinitions) {
         return __awaiter(this, void 0, void 0, function* () {
             yield fs.writeFileSync(this.apiContractFile, "");
-            const importTypes = file_formatting_writing_helpers_1.importStatment(file_formatting_writing_helpers_1.relativePath(this.typesFile), endpointDefinitions.reduce((acc, def) => {
-                return [...acc, def.requestTypeName, def.responseTypeName];
-            }, []));
+            const importTypes = file_formatting_writing_helpers_1.importStatment(file_formatting_writing_helpers_1.relativePath(this.typesFile), endpointDefinitions.reduce((acc, def) => [...acc, def.requestTypeName, def.responseTypeName], []));
             yield fs.appendFileSync(this.apiContractFile, importTypes);
-            const methods = file_formatting_writing_helpers_1.interfaceMethods(this.interfaceName, endpointDefinitions);
-            yield fs.appendFileSync(this.apiContractFile, methods);
+            const interfaceMethods = interfaceBody(this.interfaceName, endpointDefinitions);
+            yield fs.appendFileSync(this.apiContractFile, interfaceMethods);
         });
     }
 }
 exports.ApiContractWriter = ApiContractWriter;
+function interfaceBody(className, endpointActions) {
+    const interfaceMethods = endpointActions.map(def => {
+        return `${def.actionName}: (req: ${def.requestTypeName}) => Promise<${def.responseTypeName}>`;
+    });
+    return `
+export interface ${className} {
+  ${interfaceMethods.join("\n\t")}
+}`;
+}
+exports.interfaceBody = interfaceBody;
 //# sourceMappingURL=api-contract-writer.js.map

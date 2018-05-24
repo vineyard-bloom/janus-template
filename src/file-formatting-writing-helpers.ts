@@ -1,11 +1,4 @@
-import { EndpointDefinition } from "./endpoint-schema-parsing"
 import * as fs from "fs"
-
-export function mapEndpointDefinitionsToReqResTypeImports(typesFilePath: string, endpointDefinitions: EndpointDefinition[]): { [fileName: string]: string[] } {
-  const requestTypes = endpointDefinitions.map(def => def.requestTypeName)
-  const responseTypes = endpointDefinitions.map(def => def.responseTypeName)
-  return { [relativePath(typesFilePath)]: requestTypes.concat(responseTypes) }
-}
 
 export async function writeImports( targetFile: string, typeRequirements: { [fileName: string]: string[] } ) {
   for ( let i in typeRequirements ){
@@ -27,15 +20,4 @@ export function relativePath(filePath: string): string {
 
 export function replaceAll(source: string, replace: string, replaceWith: string = ""): string {
   return source.split(replace).join("")
-}
-
-export function interfaceMethods (className: string, endpointActions: { actionName: string, requestTypeName: string, responseTypeName: string }[]): string {
-  const interfaceMethods = endpointActions.map(def => {
-    return `${def.actionName}: (req: ${def.requestTypeName}) => Promise<${def.responseTypeName}>`
-  })
-
-  return `
-export interface ${className} {
-  ${interfaceMethods.join("\n\t")}
-}`
 }

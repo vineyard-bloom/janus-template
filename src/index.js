@@ -8,11 +8,11 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const stub_generating_1 = require("./stubs/stub-generating");
+const stub_function_writer_1 = require("./stubs/stub-function-writer");
 const endpoint_schema_parsing_1 = require("./endpoint-schema-parsing");
-const typescript_type_generator_1 = require("./types/typescript-type-generator");
+const typescript_type_writer_1 = require("./types/typescript-type-writer");
 const api_contract_writer_1 = require("./api-contract/api-contract-writer");
-const api_stub_file_writer_1 = require("./stubs/api-stub-file-writer");
+const api_stub_writer_1 = require("./stubs/api-stub-writer");
 const requireDir = require("require-dir");
 const API_CONTRACT_NAME = "ApiContract";
 function configureJsonSchemaGeneration(targetDirectory, sourceDirectory, schemaDefinitionsJSON) {
@@ -22,14 +22,16 @@ function configureJsonSchemaGeneration(targetDirectory, sourceDirectory, schemaD
     const apiStubFile = targetDirectory + "/api-stub.ts";
     const endpointDefinitions = endpoint_schema_parsing_1.extractEndpointDefinitionsFromSchema(sourceDirectory, schemaDefinitionsJSON);
     const rawSchema = { endpoints: requireDir(sourceDirectory, { recurse: true }), schemaDefinitions: schemaDefinitionsJSON };
+    const typescriptTypeWriter = new typescript_type_writer_1.TypescriptTypeWriter(endpointTypesFile);
     const apiActionsWriter = new api_contract_writer_1.ApiContractWriter(apiContractFile, endpointTypesFile, API_CONTRACT_NAME);
-    const apiStubWriter = new api_stub_file_writer_1.ApiStubWriter(apiStubFile, endpointStubsFile, apiContractFile, API_CONTRACT_NAME);
+    const apiStubWriter = new api_stub_writer_1.ApiStubWriter(apiStubFile, endpointStubsFile, apiContractFile, API_CONTRACT_NAME);
+    const stubFunctionsWrite = new stub_function_writer_1.StubFunctionWriter(endpointStubsFile, endpointTypesFile);
     return {
         endpointDefinitions,
         rawSchema,
         compileAll: () => __awaiter(this, void 0, void 0, function* () {
-            yield typescript_type_generator_1.generateTsEndpointTypeDefinitions(endpointTypesFile, endpointDefinitions);
-            yield stub_generating_1.generateEndpointStubDefinitions(endpointStubsFile, endpointTypesFile, endpointDefinitions);
+            yield typescriptTypeWriter.writeFile(endpointDefinitions);
+            yield stubFunctionsWrite.writeFile(endpointDefinitions);
             yield apiActionsWriter.writeFile(endpointDefinitions);
             yield apiStubWriter.writeFile(endpointDefinitions);
         })

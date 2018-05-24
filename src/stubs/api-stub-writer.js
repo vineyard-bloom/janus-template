@@ -8,20 +8,19 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const import_writing_helpers_1 = require("../import-writing-helpers");
 const fs = require("fs");
 const file_formatting_writing_helpers_1 = require("../file-formatting-writing-helpers");
 class ApiStubWriter {
-    constructor(apiStubFile, stubsFile, apiContractFile, apiContractInterfaceName = "ApiContract") {
+    constructor(apiStubFile, stubFunctionsFile, apiContractFile, apiContractInterfaceName = "ApiContract") {
         this.apiStubFile = apiStubFile;
-        this.stubsFile = stubsFile;
+        this.stubFunctionsFile = stubFunctionsFile;
         this.apiContractFile = apiContractFile;
         this.apiContractInterfaceName = apiContractInterfaceName;
     }
     writeFile(endpointDefinitions) {
         return __awaiter(this, void 0, void 0, function* () {
             yield this.writeImports(endpointDefinitions);
-            return this.writeStubApi(endpointDefinitions);
+            yield this.writeStubApi(endpointDefinitions);
         });
     }
     writeStubApi(endpointDefinitions) {
@@ -40,19 +39,14 @@ export const apiStub: ${this.apiContractInterfaceName} = {
         return __awaiter(this, void 0, void 0, function* () {
             yield fs.writeFileSync(this.apiStubFile, '');
             const stubDependencies = endpointDefinitions.map(extractResponseStubName);
-            const imports = {
-                [file_formatting_writing_helpers_1.relativePath(this.stubsFile)]: stubDependencies,
-                [file_formatting_writing_helpers_1.relativePath(this.apiContractFile)]: [this.apiContractInterfaceName]
-            };
-            yield import_writing_helpers_1.writeImports(this.apiStubFile, imports);
+            const importsFromStubFunctions = file_formatting_writing_helpers_1.importStatment(file_formatting_writing_helpers_1.relativePath(this.stubFunctionsFile), stubDependencies);
+            const importsFromApiContract = file_formatting_writing_helpers_1.importStatment(file_formatting_writing_helpers_1.relativePath(this.apiContractFile), [this.apiContractInterfaceName]);
+            yield fs.appendFileSync(this.apiStubFile, importsFromStubFunctions + "\n" + importsFromApiContract + "\n");
         });
     }
 }
 exports.ApiStubWriter = ApiStubWriter;
-function extractRequestDataStubName(endpointDefinition) {
-    return endpointDefinition.actionName + "RequestDataStub";
-}
 function extractResponseStubName(endpointDefinition) {
     return endpointDefinition.actionName + "ResponseStub";
 }
-//# sourceMappingURL=api-stub-file-writer.js.map
+//# sourceMappingURL=api-stub-writer.js.map

@@ -7,6 +7,7 @@ import { Request } from 'vineyard-lawn'
  */
 
 /************************ -- CreateUser -- *****************************/
+
 	
 export interface CreateUserRequest extends Request {
 	data: {
@@ -16,17 +17,20 @@ export interface CreateUserRequest extends Request {
 }
 
 
+
 export interface CreateUserResponse {
   email: string
 }
 
 
 /************************ -- GetUser -- *****************************/
+
 	
 export interface GetUserRequest extends Request {
 	data: {}
 }
 	
+
 
 export interface GetUserResponse {
   email: string

@@ -8,35 +8,39 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const stub_file_writer_1 = require("./stub-file-writer");
 const file_formatting_writing_helpers_1 = require("../file-formatting-writing-helpers");
-const api_stub_file_writer_1 = require("./api-stub-file-writer");
-function generateEndpointStubDefinitions(targetFile, typesFile, endpointDefinitions) {
-    return __awaiter(this, void 0, void 0, function* () {
-        const imports = file_formatting_writing_helpers_1.mapEndpointDefinitionsToReqResTypeImports(typesFile, endpointDefinitions);
-        yield stub_file_writer_1.writeStubGeneratorsPrefix(targetFile, imports);
-        for (let i in endpointDefinitions) {
-            const { requestStub, responseStub, title } = mapEndpointDefinitionToStubDefs(endpointDefinitions[i]);
-            yield stub_file_writer_1.writeRequestResponseStubFunctions(targetFile, requestStub, responseStub, title);
-        }
-        return endpointDefinitions;
-    });
+const fs = require("fs");
+class StubFunctionWriter {
+    constructor(stubFunctionsFile, typesFile) {
+        this.stubFunctionsFile = stubFunctionsFile;
+        this.typesFile = typesFile;
+    }
+    writeFile(endpointDefinitions) {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield fs.writeFileSync(this.stubFunctionsFile, "");
+            const importTypes = file_formatting_writing_helpers_1.importStatment(file_formatting_writing_helpers_1.relativePath(this.typesFile), endpointDefinitions.reduce((acc, def) => [...acc, def.requestTypeName, def.responseTypeName], []));
+            yield fs.appendFileSync(this.stubFunctionsFile, importTypes);
+            yield fs.appendFileSync(this.stubFunctionsFile, StubFunctionWriter.prefix);
+            for (let i in endpointDefinitions) {
+                const stubFunctions = formatRequestResponseStubFunctions(endpointDefinitions[i]);
+                yield fs.appendFileSync(this.stubFunctionsFile, stubFunctions);
+            }
+        });
+    }
 }
-exports.generateEndpointStubDefinitions = generateEndpointStubDefinitions;
-function generateApiStub(targetFile, stubsFile, apiContractFile, endpointDefinitions) {
-    return __awaiter(this, void 0, void 0, function* () {
-        const writer = new api_stub_file_writer_1.ApiStubWriter(targetFile, stubsFile, apiContractFile);
-        yield writer.writeFile(endpointDefinitions);
-        return endpointDefinitions;
-    });
-}
-exports.generateApiStub = generateApiStub;
-function mapEndpointDefinitionToStubDefs(endpointDefinition) {
+StubFunctionWriter.prefix = "\nconst jsf = require('json-schema-faker')\n" +
+    "jsf.extend('faker', function() {\n" +
+    "  return require('faker')\n" +
+    "})";
+exports.StubFunctionWriter = StubFunctionWriter;
+function formatRequestResponseStubFunctions(endpointDefinition) {
     const { title, request, response, requestTypeName, responseTypeName } = endpointDefinition;
     const writeableTitle = formatStubFunctionName(title);
     const requestStub = formatStubFunction(writeableTitle + "RequestData", request, requestTypeName + "['data']");
     const responseStub = formatStubFunction(writeableTitle + "Response", response, responseTypeName);
-    return { requestStub, responseStub, title };
+    return "\n\n/************************ -- " + title + " -- *****************************/\n" +
+        requestStub + "\n" +
+        responseStub;
 }
 function formatStubFunction(title, schema, returnTypeName) {
     return `\n
@@ -48,4 +52,4 @@ function formatStubFunctionName(title) {
     const noWhiteSpace = title.replace(" ", "").replace("\n", "").replace("\t", "");
     return noWhiteSpace.charAt(0).toLowerCase() + noWhiteSpace.slice(1);
 }
-//# sourceMappingURL=stub-generating.js.map
+//# sourceMappingURL=stub-function-writer.js.map

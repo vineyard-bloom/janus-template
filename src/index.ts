@@ -1,8 +1,8 @@
-import { generateApiStub, generateEndpointStubDefinitions } from "./stubs/stub-generating"
+import { StubFunctionWriter } from "./stubs/stub-function-writer"
 import { EndpointDefinition, extractEndpointDefinitionsFromSchema } from "./endpoint-schema-parsing"
-import { generateTsEndpointTypeDefinitions } from "./types/typescript-type-generator"
+import { TypescriptTypeWriter } from "./types/typescript-type-writer"
 import { ApiContractWriter } from './api-contract/api-contract-writer'
-import { ApiStubWriter } from './stubs/api-stub-file-writer'
+import { ApiStubWriter } from './stubs/api-stub-writer'
 
 const requireDir = require("require-dir")
 
@@ -28,15 +28,17 @@ export function configureJsonSchemaGeneration(
   const rawSchema = { endpoints: requireDir(sourceDirectory, {recurse: true}), schemaDefinitions: schemaDefinitionsJSON }
 
 
+  const typescriptTypeWriter = new TypescriptTypeWriter(endpointTypesFile)
   const apiActionsWriter = new ApiContractWriter(apiContractFile, endpointTypesFile, API_CONTRACT_NAME)
   const apiStubWriter = new ApiStubWriter(apiStubFile, endpointStubsFile, apiContractFile, API_CONTRACT_NAME)
+  const stubFunctionsWrite = new StubFunctionWriter(endpointStubsFile, endpointTypesFile)
 
   return {
     endpointDefinitions,
     rawSchema,
     compileAll: async () => {
-      await generateTsEndpointTypeDefinitions(endpointTypesFile, endpointDefinitions)
-      await generateEndpointStubDefinitions(endpointStubsFile, endpointTypesFile, endpointDefinitions)
+      await typescriptTypeWriter.writeFile(endpointDefinitions)
+      await stubFunctionsWrite.writeFile(endpointDefinitions)
       await apiActionsWriter.writeFile(endpointDefinitions)
       await apiStubWriter.writeFile(endpointDefinitions)
     }

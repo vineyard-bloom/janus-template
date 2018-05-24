@@ -9,10 +9,6 @@ export async function parseJson2Ts(jsonSchema: object, typeName: string, extends
   return writeableTypeString
 }
 
-function removeWhiteSpace(text: string): string {
-  return text.replace(/\s/g, "")
-}
-
 function appendInterfaceExtension(typeDef: string, interfaceName: string): string {
   const typeDefChars = typeDef.split("")
   const definitionBeginning = typeDefChars.findIndex( word => word === "{" )
