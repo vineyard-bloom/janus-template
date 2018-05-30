@@ -11,11 +11,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const fs = require("fs");
 const file_formatting_writing_helpers_1 = require("../file-formatting-writing-helpers");
 class ApiStubWriter {
-    constructor(apiStubFile, stubFunctionsFile, apiContractFile, apiContractInterfaceName = "ApiContract") {
+    constructor(apiStubFile, stubFunctionsFile, apiContractFile, apiContractInterfaceName, apiStubConstName) {
         this.apiStubFile = apiStubFile;
         this.stubFunctionsFile = stubFunctionsFile;
         this.apiContractFile = apiContractFile;
         this.apiContractInterfaceName = apiContractInterfaceName;
+        this.apiStubConstName = apiStubConstName;
     }
     writeFile(endpointDefinitions) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -28,11 +29,11 @@ class ApiStubWriter {
             const stubMethods = endpointDefinitions.map(ed => {
                 return `${ed.actionName}: ${extractResponseStubName(ed)}`;
             });
-            const classToWrite = `
-export const apiStub: ${this.apiContractInterfaceName} = {
+            const constToWrite = `
+export const ${this.apiStubConstName}: ${this.apiContractInterfaceName} = {
   ${stubMethods.join(",\n\t")}
 }`;
-            yield fs.appendFileSync(this.apiStubFile, classToWrite);
+            yield fs.appendFileSync(this.apiStubFile, constToWrite);
         });
     }
     writeImports(endpointDefinitions) {

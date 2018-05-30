@@ -7,12 +7,14 @@ export class ApiStubWriter {
   private readonly stubFunctionsFile: string
   private readonly apiContractFile: string
   private readonly apiContractInterfaceName: string
+  private readonly apiStubConstName: string
 
-  constructor(apiStubFile: string, stubFunctionsFile: string, apiContractFile: string, apiContractInterfaceName: string = "ApiContract") {
+  constructor(apiStubFile: string, stubFunctionsFile: string, apiContractFile: string, apiContractInterfaceName: string, apiStubConstName: string) {
     this.apiStubFile = apiStubFile
     this.stubFunctionsFile = stubFunctionsFile
     this.apiContractFile = apiContractFile
     this.apiContractInterfaceName = apiContractInterfaceName
+    this.apiStubConstName = apiStubConstName
   }
 
   async writeFile(endpointDefinitions: EndpointDefinition[]): Promise<void> {
@@ -25,12 +27,12 @@ export class ApiStubWriter {
       return `${ed.actionName}: ${extractResponseStubName(ed)}`
     })
 
-    const classToWrite = `
-export const apiStub: ${this.apiContractInterfaceName} = {
+    const constToWrite = `
+export const ${this.apiStubConstName}: ${this.apiContractInterfaceName} = {
   ${stubMethods.join(",\n\t")}
 }`
 
-    await fs.appendFileSync(this.apiStubFile, classToWrite)
+    await fs.appendFileSync(this.apiStubFile, constToWrite)
   }
 
   private async writeImports(endpointDefinitions: EndpointDefinition[]): Promise<void> {

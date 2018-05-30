@@ -7,25 +7,32 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __rest = (this && this.__rest) || function (s, e) {
+    var t = {};
+    for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
+        t[p] = s[p];
+    if (s != null && typeof Object.getOwnPropertySymbols === "function")
+        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) if (e.indexOf(p[i]) < 0)
+            t[p[i]] = s[p[i]];
+    return t;
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const stub_function_writer_1 = require("./src/stubs/stub-function-writer");
 const endpoint_schema_parsing_1 = require("./src/endpoint-schema-parsing");
 const typescript_type_writer_1 = require("./src/types/typescript-type-writer");
 const api_contract_writer_1 = require("./src/api-contract/api-contract-writer");
 const api_stub_writer_1 = require("./src/stubs/api-stub-writer");
+const naming_conventions_1 = require("./naming-conventions");
 const requireDir = require("require-dir");
-const API_CONTRACT_NAME = "ApiContract";
-function configureJsonSchemaGeneration(targetDirectory, sourceDirectory, schemaDefinitionsJSON) {
-    const endpointTypesFile = targetDirectory + "/endpoint-types.ts";
-    const endpointStubsFile = targetDirectory + "/endpoint-stubs.ts";
-    const apiContractFile = targetDirectory + "/api-contract.ts";
-    const apiStubFile = targetDirectory + "/api-stub.ts";
+function configureJsonSchemaGeneration(targetDirectory, sourceDirectory, schemaDefinitionsJSON, namingConventions = naming_conventions_1.DEFAULT_NAMING_CONVENTIONS) {
+    const { apiStubConstName, apiContractInterfaceName } = namingConventions, fileNames = __rest(namingConventions, ["apiStubConstName", "apiContractInterfaceName"]);
+    const { typescriptTypeFile, stubFunctionsFile, apiStubFile, apiContractFile } = fullFilePaths(targetDirectory, fileNames);
+    const typescriptTypeWriter = new typescript_type_writer_1.TypescriptTypeWriter(typescriptTypeFile);
+    const apiActionsWriter = new api_contract_writer_1.ApiContractWriter(apiContractFile, typescriptTypeFile, apiContractInterfaceName);
+    const apiStubWriter = new api_stub_writer_1.ApiStubWriter(apiStubFile, stubFunctionsFile, apiContractFile, apiContractInterfaceName, apiStubConstName);
+    const stubFunctionsWrite = new stub_function_writer_1.StubFunctionWriter(stubFunctionsFile, typescriptTypeFile);
     const endpointDefinitions = endpoint_schema_parsing_1.extractEndpointDefinitionsFromSchema(sourceDirectory, schemaDefinitionsJSON);
     const rawSchema = { endpoints: requireDir(sourceDirectory, { recurse: true }), schemaDefinitions: schemaDefinitionsJSON };
-    const typescriptTypeWriter = new typescript_type_writer_1.TypescriptTypeWriter(endpointTypesFile);
-    const apiActionsWriter = new api_contract_writer_1.ApiContractWriter(apiContractFile, endpointTypesFile, API_CONTRACT_NAME);
-    const apiStubWriter = new api_stub_writer_1.ApiStubWriter(apiStubFile, endpointStubsFile, apiContractFile, API_CONTRACT_NAME);
-    const stubFunctionsWrite = new stub_function_writer_1.StubFunctionWriter(endpointStubsFile, endpointTypesFile);
     return {
         endpointDefinitions,
         rawSchema,
@@ -38,4 +45,12 @@ function configureJsonSchemaGeneration(targetDirectory, sourceDirectory, schemaD
     };
 }
 exports.configureJsonSchemaGeneration = configureJsonSchemaGeneration;
+function fullFilePaths(targetDirectory, fileNamingConventions) {
+    return {
+        typescriptTypeFile: targetDirectory + '/' + fileNamingConventions.typescriptTypeFileName,
+        stubFunctionsFile: targetDirectory + '/' + fileNamingConventions.stubFunctionsFileName,
+        apiContractFile: targetDirectory + '/' + fileNamingConventions.apiContractFileName,
+        apiStubFile: targetDirectory + '/' + fileNamingConventions.apiStubFileName
+    };
+}
 //# sourceMappingURL=index.js.map
